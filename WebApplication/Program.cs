@@ -22,10 +22,9 @@ namespace WebApplication
                 Task.Run(async () =>
                 {
 
-                    var name = request.QueryString.Get("name");
-                    // var name = "Bob";
+                    var index = request.QueryString.Get("index");
                     var timeText = $"the time on the server is {dateTimeManager.GetCurrentTime()} on {dateTimeManager.GetCurrentDate()}";
-                    var buffer = System.Text.Encoding.UTF8.GetBytes($"Hello {name} - {timeText}");
+                    var buffer = System.Text.Encoding.UTF8.GetBytes($"Hello Bob - {timeText} {index}");
 
                     // Send the response - prior to sending the response, create a delay between 0 - 500ms
                     Random rnd = new Random();
