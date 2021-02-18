@@ -7,7 +7,10 @@ steps:
 
   - label: 'im panic :rocket:'
     command: 
-      - docker build -t myimage .
-      - docker run --rm myimage
+      - docker build -t frameworkless-basic-web-app-tiffany:latest .
+      - docker push 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/frameworkless-basic-web-app-tiffany:latest
     agents:
       queue: grace-lab
+    plugins:
+      - ecr#v2.3.0:
+          login: true
