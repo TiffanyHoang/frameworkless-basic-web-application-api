@@ -4,3 +4,10 @@ steps:
     command: 'echo hello, engineer'
     agents:
       queue: grace-lab
+
+  - label: 'im panic :rocket:'
+    command: 
+      - docker build -t myimage .
+      - docker run --rm myimage
+    agents:
+      queue: grace-lab
