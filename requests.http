@@ -1,0 +1,25 @@
+@serverPrefix = http://localhost:8080
+
+GET {{serverPrefix}}
+
+###
+
+GET {{serverPrefix}}/people
+
+###
+
+POST {{serverPrefix}}/people
+
+[
+    {
+        "Name":"DS"
+    }
+]
+
+### 
+
+DELETE  {{serverPrefix}}/people
+
+{
+    "Name":"DS"
+}
