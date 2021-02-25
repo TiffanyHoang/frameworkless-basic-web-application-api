@@ -10,11 +10,9 @@ GET {{serverPrefix}}/people
 
 POST {{serverPrefix}}/people
 
-[
-    {
-        "Name":"DS"
-    }
-]
+{
+    "Name":"DS"
+}
 
 ### 
 

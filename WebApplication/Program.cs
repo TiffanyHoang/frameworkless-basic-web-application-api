@@ -10,6 +10,12 @@ namespace WebApplication
     {
         static void Main(string[] args)
         {
+            
+            Run();
+            //server.Stop();  // never reached...
+        }
+        static void Run()
+        {
             var server = new HttpListener();
             server.Prefixes.Add("http://*:8080/");
             server.Start();
@@ -25,6 +31,7 @@ namespace WebApplication
 
                 Task.Run(() =>
                 {
+                    Console.WriteLine("x1");
                     var peopleListString = "";
                     foreach (var people in peopleList)
                     {
@@ -33,10 +40,14 @@ namespace WebApplication
 
                     if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/people")
                     {
+                        Console.WriteLine("aa1");
                         var options = new JsonSerializerOptions { WriteIndented = true };
+                        Console.WriteLine("aa2");
                         var buffer = JsonSerializer.SerializeToUtf8Bytes(peopleList, options);
                         context.Response.ContentLength64 = buffer.Length;
+                        Console.WriteLine("aa3");
                         context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                        Console.WriteLine("aa4");
                     }
 
                     if (request.HttpMethod == "POST" && request.Url.AbsolutePath == "/people")
@@ -45,8 +56,10 @@ namespace WebApplication
                                      request.ContentEncoding))
                         {
                             var newPerson = reader.ReadToEnd();
-                            peopleList.Add(new People(newPerson)); //read Json from postman then convert json to people object
-                            var status = System.Text.Encoding.UTF8.GetBytes($"Created {newPerson}");
+                            var newPersonJson = JsonSerializer.Deserialize<People>(newPerson);
+                            peopleList.Add(new People(newPersonJson.Name));
+                            var status = System.Text.Encoding.UTF8.GetBytes($"Created {newPersonJson.Name}");
+
                             context.Response.ContentLength64 = status.Length;
                             context.Response.OutputStream.Write(status, 0, status.Length);
                         }
@@ -57,10 +70,17 @@ namespace WebApplication
                     {
                         using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
                         {
+
+
                             var deletePerson = reader.ReadToEnd();
-                            var deletePersoninList = peopleList.Find(x => x.Name == deletePerson);
+                            var deletePersonJson = JsonSerializer.Deserialize<People>(deletePerson);
+
+                            var deletePersoninList = peopleList.Find(x => x.Name == deletePersonJson.Name);
+
                             peopleList.Remove(deletePersoninList);
-                            var status = System.Text.Encoding.UTF8.GetBytes($"Deleted {deletePerson}");
+
+
+                            var status = System.Text.Encoding.UTF8.GetBytes($"Deleted {deletePersoninList.Name}");
                             context.Response.ContentLength64 = status.Length;
                             context.Response.OutputStream.Write(status, 0, status.Length);
                         }
@@ -76,7 +96,6 @@ namespace WebApplication
 
                 });
             }
-            //server.Stop();  // never reached...
         }
     }
 }
