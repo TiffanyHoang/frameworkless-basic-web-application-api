@@ -5,12 +5,12 @@ namespace WebApplication
     {
         private List<Person> _peopleList;
 
-        private string _defaultPerson = "Tiffany";
+        public string defaultPerson = "Tiffany";
 
         public Repository()
         {
             _peopleList = new List<Person>();
-            _peopleList.Add(new Person (_defaultPerson));
+            _peopleList.Add(new Person (defaultPerson));
         }
 
         public List<Person> GetPeopleList()
@@ -26,6 +26,12 @@ namespace WebApplication
         public void DeletePerson(Person person)
         {
             _peopleList.Remove(person);
+        }
+
+        public void UpdatePerson(Person person, Person updatedPerson)
+        {
+            var existingPerson = _peopleList.Find(p => p.Name == person.Name);
+            existingPerson.Name = updatedPerson.Name;
         }
     }
 }
