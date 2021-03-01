@@ -21,7 +21,7 @@ namespace WebApplication
             server.Start();
             Console.WriteLine("Server started");
             DateTimeManager dateTimeManager = new DateTimeManager();
-            List<People> peopleList = new List<People> { new People("Bob"), new People("Tiff") };
+            List<Person> peopleList = new List<Person> { new Person("Bob"), new Person("Tiff") };
 
             while (true)
             {
@@ -31,7 +31,6 @@ namespace WebApplication
 
                 Task.Run(() =>
                 {
-                    Console.WriteLine("x1");
                     var peopleListString = "";
                     foreach (var people in peopleList)
                     {
@@ -40,14 +39,10 @@ namespace WebApplication
 
                     if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/people")
                     {
-                        Console.WriteLine("aa1");
                         var options = new JsonSerializerOptions { WriteIndented = true };
-                        Console.WriteLine("aa2");
                         var buffer = JsonSerializer.SerializeToUtf8Bytes(peopleList, options);
                         context.Response.ContentLength64 = buffer.Length;
-                        Console.WriteLine("aa3");
                         context.Response.OutputStream.Write(buffer, 0, buffer.Length);
-                        Console.WriteLine("aa4");
                     }
 
                     if (request.HttpMethod == "POST" && request.Url.AbsolutePath == "/people")
@@ -56,8 +51,8 @@ namespace WebApplication
                                      request.ContentEncoding))
                         {
                             var newPerson = reader.ReadToEnd();
-                            var newPersonJson = JsonSerializer.Deserialize<People>(newPerson);
-                            peopleList.Add(new People(newPersonJson.Name));
+                            var newPersonJson = JsonSerializer.Deserialize<Person>(newPerson);
+                            peopleList.Add(new Person(newPersonJson.Name));
                             var status = System.Text.Encoding.UTF8.GetBytes($"Created {newPersonJson.Name}");
 
                             context.Response.ContentLength64 = status.Length;
@@ -73,7 +68,7 @@ namespace WebApplication
 
 
                             var deletePerson = reader.ReadToEnd();
-                            var deletePersonJson = JsonSerializer.Deserialize<People>(deletePerson);
+                            var deletePersonJson = JsonSerializer.Deserialize<Person>(deletePerson);
 
                             var deletePersoninList = peopleList.Find(x => x.Name == deletePersonJson.Name);
 

@@ -2,11 +2,11 @@ using System;
 
 namespace WebApplication
 {
-    public class People
+    public class Person
     {
-        public string Name{get;}
+        public string Name{get; set;}
 
-        public People (string name)
+        public Person (string name)
         {
             Name = name;
         }
