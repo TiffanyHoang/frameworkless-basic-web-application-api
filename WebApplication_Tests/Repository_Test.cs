@@ -34,8 +34,17 @@ namespace WebApplication_Tests
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public void DeletePersonToPeopleList_ReturnCorrectListOfPeople()
+        {
+            _repository.DeletePerson(new Person("DS"));
+            var actual = _repository.GetPeopleList();
+            var expected = new List<Person>{
+                                new Person("Tiffany"),
+                            };
+
+            Assert.Equal(expected, actual);
+        }
 
     }
-
-
 }

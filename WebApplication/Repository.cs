@@ -5,11 +5,12 @@ namespace WebApplication
     {
         private List<Person> _peopleList;
 
+        private string _defaultPerson = "Tiffany";
+
         public Repository()
         {
             _peopleList = new List<Person>();
-            const string defaultPerson = "Tiffany";
-            _peopleList.Add(new Person (defaultPerson));
+            _peopleList.Add(new Person (_defaultPerson));
         }
 
         public List<Person> GetPeopleList()
@@ -20,6 +21,11 @@ namespace WebApplication
         public void AddPerson(Person person)
         {
             _peopleList.Add(person);
+        }
+
+        public void DeletePerson(Person person)
+        {
+            _peopleList.Remove(person);
         }
     }
 }
