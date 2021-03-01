@@ -4,7 +4,7 @@ namespace WebApplication
     public class Repository
     {
         private List<Person> _peopleList;
-        
+
         public Repository()
         {
             _peopleList = new List<Person>();
@@ -15,6 +15,11 @@ namespace WebApplication
         public List<Person> GetPeopleList()
         {
             return _peopleList;
+        }
+
+        public void AddPerson(Person person)
+        {
+            _peopleList.Add(person);
         }
     }
 }
