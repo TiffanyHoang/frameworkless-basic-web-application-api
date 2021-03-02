@@ -3,11 +3,9 @@ using Xunit;
 using System.Net;
 using WebApplication;
 using System.Net.Http;
-using WebApplication_Tests.Server_Test;
-using WebApplication.Server;
 using System.IO;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+using Moq;
+using System.Text;
 
 namespace WebApplication_Tests
 {
@@ -37,27 +35,21 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public async void GetPeopleList_ReturnCorrectListofPeopleInJsonFormat()
+        public void CreatePerson_AddPersonToRepositoryAndRespond()
         {
-            IServer mockServer = new MockServer("http://*:8081/people");
-            var context = mockServer.Context();
-            var person = new Person("DS");
-            var values = new Dictionary<string, string>
-                {
-                    { "Name", "DS" },
-                };
+            var request = Mock.Of<IRequest>(r =>
+                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DS\"}")) && r.ContentEncoding == Encoding.UTF8
+                );
+            var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
+            var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+            _requestHandler.CreatePerson(context);
 
-            string json = JsonConvert.SerializeObject(values, Formatting.Indented);
-            var content = new StringContent(json);
-            var response = await _client.PostAsync("http://localhost:8081/people", content);
+            Assert.Equal((int) HttpStatusCode.OK, response.StatusCode);
 
-            var responseString = await response.Content.ReadAsStringAsync();
+            response.OutputStream.Position = 0;
+            var actualResponse = new StreamReader(response.OutputStream, Encoding.UTF8).ReadToEnd();
 
-            var actual = _requestHandler.CreatePerson(context);
-            var expected = "test";
-
-            Assert.Equal(expected, actual);
-            mockServer.Stop();
+            Assert.Equal("Created DS", actualResponse);
         }
     }
 }

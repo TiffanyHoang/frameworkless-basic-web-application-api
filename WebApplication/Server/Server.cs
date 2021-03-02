@@ -2,7 +2,7 @@ using System.Net;
 
 namespace WebApplication.Server
 {
-    public class Server:IServer
+    public class Server
     {
         private HttpListener _server;
         public Server(string prefixes)

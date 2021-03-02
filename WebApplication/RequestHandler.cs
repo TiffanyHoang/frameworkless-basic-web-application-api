@@ -26,10 +26,9 @@ namespace WebApplication
             return $"Hello {peopleListString}- {timeText}";
         }
 
-        public string CreatePerson(HttpListenerContext context)
+        public void CreatePerson(IContext context)
         {
-            using (var reader = new StreamReader(context.Request.InputStream,
-                                     context.Request.ContentEncoding))
+            using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {
                 var newPerson = reader.ReadToEnd();
                 var newPersonJson = JsonSerializer.Deserialize<Person>(newPerson);
@@ -37,11 +36,10 @@ namespace WebApplication
                 _repository.AddPerson(new Person(newPersonJson.Name));
                 
                 var responseString = System.Text.Encoding.UTF8.GetBytes($"Created {newPersonJson.Name}");
+
                 context.Response.StatusCode = (int) HttpStatusCode.OK;
                 context.Response.ContentLength64 = responseString.Length;
                 context.Response.OutputStream.Write(responseString, 0, responseString.Length);
-                
-                return context.Response.ToString();
             }
         }
     }
