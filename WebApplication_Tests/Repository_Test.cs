@@ -1,6 +1,7 @@
 using Xunit;
 using System.Collections.Generic;
 using WebApplication;
+
 namespace WebApplication_Tests
 {
     public class Repository_Test
@@ -10,6 +11,7 @@ namespace WebApplication_Tests
         {
             _repository = new Repository();
         }
+        
         [Fact]
         public void GetPeopleList_ReturnCorrectListOfPeople()
         {
