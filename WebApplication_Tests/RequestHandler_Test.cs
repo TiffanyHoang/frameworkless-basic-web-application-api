@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.IO;
 using Moq;
 using System.Text;
+using System.Collections.Generic;
 
 namespace WebApplication_Tests
 {
@@ -67,6 +68,10 @@ namespace WebApplication_Tests
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
             _requestHandler.HandleCreatePerson(context);
 
+            var expectedRepo = new List<Person> { new Person("Tiffany"), new Person("DS") };
+
+            Assert.Equal(expectedRepo, _repository.GetPeopleList());
+
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
 
             response.OutputStream.Position = 0;
@@ -79,7 +84,7 @@ namespace WebApplication_Tests
         public void HandleCreatePerson_WhenNewPersonSameAsExistingPerson_RespondConflictStatus()
         {
             var request = Mock.Of<IRequest>(r =>
-                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) && r.ContentEncoding == Encoding.UTF8 
+                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) && r.ContentEncoding == Encoding.UTF8
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
@@ -99,6 +104,10 @@ namespace WebApplication_Tests
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
             _requestHandler.HandleUpdatePerson(context);
 
+            var expectedRepo = new List<Person> { new Person("Tiffany"), new Person("DSTeoh") };
+
+            Assert.Equal(expectedRepo, _repository.GetPeopleList());
+            
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
 
             response.OutputStream.Position = 0;
