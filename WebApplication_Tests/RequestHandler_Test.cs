@@ -58,5 +58,21 @@ namespace WebApplication_Tests
 
             Assert.Equal("{\n  \"Name\": \"DS\"\n}", actualResponse);
         }
+
+        [Fact]
+        public void GetPeople_RespondListOfPeopleInJsonFormatAndCorrectStatusCode()
+        {
+            var request = Mock.Of<IRequest>();
+            var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
+            var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+            _requestHandler.GetPeople(context);
+
+            Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+
+            response.OutputStream.Position = 0;
+            var actualResponse = new StreamReader(response.OutputStream, Encoding.UTF8).ReadToEnd();
+
+            Assert.Equal("[\n  {\n    \"Name\": \"Tiffany\"\n  }\n]", actualResponse);
+        }
     }
 }

@@ -39,14 +39,20 @@ namespace WebApplication
 
                 _repository.AddPerson(new Person(newPersonObject.Name));
 
-                context.Response.StatusCode = (int)HttpStatusCode.OK;
-
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 var buffer = JsonSerializer.SerializeToUtf8Bytes(new Person(newPersonObject.Name), options);
-
                 context.Response.ContentLength64 = buffer.Length;
                 context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                context.Response.StatusCode = (int)HttpStatusCode.OK;
             }
+        }
+        public void GetPeople(IContext context)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var buffer = JsonSerializer.SerializeToUtf8Bytes(_repository.GetPeopleList(), options);
+            context.Response.ContentLength64 = buffer.Length;
+            context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+            context.Response.StatusCode = (int)HttpStatusCode.OK;
         }
     }
 }
