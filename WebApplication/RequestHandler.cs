@@ -13,7 +13,7 @@ namespace WebApplication
             _repository = repository;
         }
 
-        public void Greeting(IContext context)
+        public void HandleGreeting(IContext context)
         {
             DateTimeManager dateTimeManager = new DateTimeManager();
             var timeText = $"the time on the server is {dateTimeManager.GetCurrentTime()} on {dateTimeManager.GetCurrentDate()}";
@@ -30,7 +30,7 @@ namespace WebApplication
             context.Response.StatusCode = (int)HttpStatusCode.OK;
         }
 
-        public void GetPeople(IContext context)
+        public void HandleGetPeople(IContext context)
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
             var buffer = JsonSerializer.SerializeToUtf8Bytes(_repository.GetPeopleList(), options);
@@ -39,7 +39,7 @@ namespace WebApplication
             context.Response.StatusCode = (int)HttpStatusCode.OK;
         }
 
-        public void CreatePerson(IContext context)
+        public void HandleCreatePerson(IContext context)
         {
             using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {

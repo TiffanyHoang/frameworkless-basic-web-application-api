@@ -24,12 +24,12 @@ namespace WebApplication_Tests
 
 
         [Fact]
-        public void Greeting_ReturnCorrectGreetingMessage()
+        public void HandleGreeting_ReturnCorrectGreetingMessage()
         {
             var request = Mock.Of<IRequest>();
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
-            _requestHandler.Greeting(context);
+            _requestHandler.HandleGreeting(context);
             var time = DateTime.Now.ToString("HH:mm");
             var date = DateTime.Now.ToString("dd MMM yyyy");
             var expectedResponse = $"Hello Tiffany - the time on the server is {time} on {date}";
@@ -42,12 +42,12 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void GetPeople_RespondListOfPeopleInJsonFormatAndCorrectStatusCode()
+        public void HandleGetPeople_RespondListOfPeopleInJsonFormatAndCorrectStatusCode()
         {
             var request = Mock.Of<IRequest>();
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
-            _requestHandler.GetPeople(context);
+            _requestHandler.HandleGetPeople(context);
 
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
 
@@ -58,14 +58,14 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void CreatePerson_NewPerson_AddPersonToRepositoryAndRespondOKStatusAndNewPersonInJsonFormat()
+        public void HandleCreatePerson_NewPerson_AddPersonToRepositoryAndRespondOKStatusAndNewPersonInJsonFormat()
         {
             var request = Mock.Of<IRequest>(r =>
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DS\"}")) && r.ContentEncoding == Encoding.UTF8
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
-            _requestHandler.CreatePerson(context);
+            _requestHandler.HandleCreatePerson(context);
 
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
 
@@ -76,14 +76,14 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void CreatePerson_ExistingPerson_RespondConflictStatus()
+        public void HandleCreatePerson_WhenNewPersonSameAsExistingPerson_RespondConflictStatus()
         {
             var request = Mock.Of<IRequest>(r =>
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) && r.ContentEncoding == Encoding.UTF8 
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
-            _requestHandler.CreatePerson(context);
+            _requestHandler.HandleCreatePerson(context);
 
             Assert.Equal((int)HttpStatusCode.Conflict, response.StatusCode);
         }
