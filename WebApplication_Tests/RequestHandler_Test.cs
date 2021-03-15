@@ -35,7 +35,7 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void CreatePerson_AddPersonToRepositoryAndRespond()
+        public void CreatePerson_AddPersonToRepositoryAndRespondCorrectly()
         {
             var request = Mock.Of<IRequest>(r =>
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DS\"}")) && r.ContentEncoding == Encoding.UTF8
@@ -49,7 +49,7 @@ namespace WebApplication_Tests
             response.OutputStream.Position = 0;
             var actualResponse = new StreamReader(response.OutputStream, Encoding.UTF8).ReadToEnd();
 
-            Assert.Equal("Created DS", actualResponse);
+            Assert.Equal("{\n  \"Name\": \"DS\"\n}", actualResponse);
         }
     }
 }

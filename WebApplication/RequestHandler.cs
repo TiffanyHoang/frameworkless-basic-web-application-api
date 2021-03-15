@@ -34,12 +34,14 @@ namespace WebApplication
                 var newPersonJson = JsonSerializer.Deserialize<Person>(newPerson);
 
                 _repository.AddPerson(new Person(newPersonJson.Name));
-                
-                var responseString = System.Text.Encoding.UTF8.GetBytes($"Created {newPersonJson.Name}");
 
-                context.Response.StatusCode = (int) HttpStatusCode.OK;
-                context.Response.ContentLength64 = responseString.Length;
-                context.Response.OutputStream.Write(responseString, 0, responseString.Length);
+                context.Response.StatusCode = (int)HttpStatusCode.OK;
+
+                var options = new JsonSerializerOptions { WriteIndented = true };
+                var buffer = JsonSerializer.SerializeToUtf8Bytes(new Person(newPersonJson.Name), options);
+
+                context.Response.ContentLength64 = buffer.Length;
+                context.Response.OutputStream.Write(buffer, 0, buffer.Length);
             }
         }
     }
