@@ -88,7 +88,6 @@ namespace WebApplication
                         context.Response.ContentLength64 = buffer.Length;
                         context.Response.OutputStream.Write(buffer, 0, buffer.Length);
                     }
-
                 });
             }
         }

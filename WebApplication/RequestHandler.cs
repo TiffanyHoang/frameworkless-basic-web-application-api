@@ -13,7 +13,7 @@ namespace WebApplication
             _repository = repository;
         }
 
-        public string Greeting()
+        public void Greeting(IContext context)
         {
             DateTimeManager dateTimeManager = new DateTimeManager();
             var timeText = $"the time on the server is {dateTimeManager.GetCurrentTime()} on {dateTimeManager.GetCurrentDate()}";
@@ -23,7 +23,11 @@ namespace WebApplication
             {
                 peopleListString += person.Name + ' ';
             }
-            return $"Hello {peopleListString}- {timeText}";
+
+            var buffer = System.Text.Encoding.UTF8.GetBytes($"Hello {peopleListString}- {timeText}");
+            context.Response.ContentLength64 = buffer.Length;
+            context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+            context.Response.StatusCode = (int)HttpStatusCode.OK;
         }
 
         public void CreatePerson(IContext context)
@@ -31,14 +35,14 @@ namespace WebApplication
             using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {
                 var newPerson = reader.ReadToEnd();
-                var newPersonJson = JsonSerializer.Deserialize<Person>(newPerson);
+                var newPersonObject = JsonSerializer.Deserialize<Person>(newPerson);
 
-                _repository.AddPerson(new Person(newPersonJson.Name));
+                _repository.AddPerson(new Person(newPersonObject.Name));
 
                 context.Response.StatusCode = (int)HttpStatusCode.OK;
 
                 var options = new JsonSerializerOptions { WriteIndented = true };
-                var buffer = JsonSerializer.SerializeToUtf8Bytes(new Person(newPersonJson.Name), options);
+                var buffer = JsonSerializer.SerializeToUtf8Bytes(new Person(newPersonObject.Name), options);
 
                 context.Response.ContentLength64 = buffer.Length;
                 context.Response.OutputStream.Write(buffer, 0, buffer.Length);
