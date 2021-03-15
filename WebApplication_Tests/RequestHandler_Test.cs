@@ -107,7 +107,7 @@ namespace WebApplication_Tests
             var expectedRepo = new List<Person> { new Person("Tiffany"), new Person("DSTeoh") };
 
             Assert.Equal(expectedRepo, _repository.GetPeopleList());
-            
+
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
 
             response.OutputStream.Position = 0;
@@ -154,6 +154,45 @@ namespace WebApplication_Tests
             _requestHandler.HandleUpdatePerson(context);
 
             Assert.Equal((int)HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public void HandleDeletePerson_DeletePersonInRepositoryAndRespondOKStatus()
+        {
+            _repository.AddPerson(new Person("DS"));
+            _repository.AddPerson(new Person("Mattias"));
+            var request = Mock.Of<IRequest>(r => r.Url == new Uri("/people/Mattias"));
+            var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
+            var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+            _requestHandler.HandleDeletePerson(context);
+
+            var expectedRepo = new List<Person> { new Person("Tiffany"), new Person("DS") };
+
+            Assert.Equal(expectedRepo, _repository.GetPeopleList());
+
+            Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public void HandleDeletePerson_PersonIsNotExisted_RespondNotFoundStatus()
+        {
+            var request = Mock.Of<IRequest>(r => r.Url == new Uri("/people/Mattias"));
+            var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
+            var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+            _requestHandler.HandleDeletePerson(context);
+
+            Assert.Equal((int)HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public void HandleDeletePerson_PersonSameAsDefaultPerson_RespondForbiddenStatus()
+        {
+            var request = Mock.Of<IRequest>(r => r.Url == new Uri("/people/Tiffany"));
+            var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
+            var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+            _requestHandler.HandleDeletePerson(context);
+
+            Assert.Equal((int)HttpStatusCode.Forbidden, response.StatusCode);
         }
     }
 }

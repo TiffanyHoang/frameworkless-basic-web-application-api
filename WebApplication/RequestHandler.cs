@@ -99,6 +99,22 @@ namespace WebApplication
 
             }
         }
-
+        public void HandleDeletePerson(IContext context)
+        {
+            var segments = context.Request.Url.Segments;
+            var deletedPerson = new Person(segments[2]);
+            if (!_repository.GetPeopleList().Contains(deletedPerson))
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            }
+            else if (deletedPerson.Name == _repository.defaultPersonName)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            }
+            else{
+                _repository.DeletePerson(deletedPerson);
+                context.Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+        }
     }
 }
