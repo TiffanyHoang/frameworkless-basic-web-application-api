@@ -70,16 +70,33 @@ namespace WebApplication
             {
                 var newPerson = reader.ReadToEnd();
                 var newPersonObject = JsonSerializer.Deserialize<Person>(newPerson);
-                
-                var segments = context.Request.Url.Segments;
-                var existingPerson = new Person(segments[2]);
-                _repository.UpdatePerson(existingPerson, new Person(newPersonObject.Name));
 
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                var buffer = JsonSerializer.SerializeToUtf8Bytes(new Person(newPersonObject.Name), options);
-                context.Response.ContentLength64 = buffer.Length;
-                context.Response.OutputStream.Write(buffer, 0, buffer.Length);
-                context.Response.StatusCode = (int)HttpStatusCode.OK;
+                var segments = context.Request.Url.Segments;
+                var oldPersonObject = new Person(segments[2]);
+
+                if (oldPersonObject.Name == newPersonObject.Name)
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                }
+                else if (_repository.defaultPersonName == newPersonObject.Name)
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                }
+                else if (!_repository.GetPeopleList().Contains(oldPersonObject))
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                }
+                else
+                {
+                    _repository.UpdatePerson(oldPersonObject, new Person(newPersonObject.Name));
+
+                    var options = new JsonSerializerOptions { WriteIndented = true };
+                    var buffer = JsonSerializer.SerializeToUtf8Bytes(new Person(newPersonObject.Name), options);
+                    context.Response.ContentLength64 = buffer.Length;
+                    context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                    context.Response.StatusCode = (int)HttpStatusCode.OK;
+                }
+
             }
         }
 

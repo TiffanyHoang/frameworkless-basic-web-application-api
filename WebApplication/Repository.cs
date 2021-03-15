@@ -5,12 +5,12 @@ namespace WebApplication
     {
         private List<Person> _peopleList;
 
-        public string defaultPerson = "Tiffany";
+        public string defaultPersonName = "Tiffany";
 
         public Repository()
         {
             _peopleList = new List<Person>();
-            _peopleList.Add(new Person (defaultPerson));
+            _peopleList.Add(new Person (defaultPersonName));
         }
 
         public List<Person> GetPeopleList()
