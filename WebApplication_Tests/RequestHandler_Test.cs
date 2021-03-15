@@ -42,7 +42,7 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void CreatePerson_AddPersonToRepositoryAndRespondCorrectly()
+        public void CreatePerson_NewPerson_AddPersonToRepositoryAndRespondOKStatusAndNewPersonInJsonFormat()
         {
             var request = Mock.Of<IRequest>(r =>
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DS\"}")) && r.ContentEncoding == Encoding.UTF8
@@ -57,6 +57,19 @@ namespace WebApplication_Tests
             var actualResponse = new StreamReader(response.OutputStream, Encoding.UTF8).ReadToEnd();
 
             Assert.Equal("{\n  \"Name\": \"DS\"\n}", actualResponse);
+        }
+
+        [Fact]
+        public void CreatePerson_ExistingPerson_RespondConflictStatus()
+        {
+            var request = Mock.Of<IRequest>(r =>
+                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) && r.ContentEncoding == Encoding.UTF8
+                );
+            var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
+            var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+            _requestHandler.CreatePerson(context);
+
+            Assert.Equal((int)HttpStatusCode.Conflict, response.StatusCode);
         }
 
         [Fact]

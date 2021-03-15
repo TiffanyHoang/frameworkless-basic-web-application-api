@@ -30,22 +30,6 @@ namespace WebApplication
             context.Response.StatusCode = (int)HttpStatusCode.OK;
         }
 
-        public void CreatePerson(IContext context)
-        {
-            using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
-            {
-                var newPerson = reader.ReadToEnd();
-                var newPersonObject = JsonSerializer.Deserialize<Person>(newPerson);
-
-                _repository.AddPerson(new Person(newPersonObject.Name));
-
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                var buffer = JsonSerializer.SerializeToUtf8Bytes(new Person(newPersonObject.Name), options);
-                context.Response.ContentLength64 = buffer.Length;
-                context.Response.OutputStream.Write(buffer, 0, buffer.Length);
-                context.Response.StatusCode = (int)HttpStatusCode.OK;
-            }
-        }
         public void GetPeople(IContext context)
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
@@ -54,5 +38,31 @@ namespace WebApplication
             context.Response.OutputStream.Write(buffer, 0, buffer.Length);
             context.Response.StatusCode = (int)HttpStatusCode.OK;
         }
+
+        public void CreatePerson(IContext context)
+        {
+            using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+            {
+                var newPerson = reader.ReadToEnd();
+                var newPersonObject = JsonSerializer.Deserialize<Person>(newPerson);
+                var isNewPersonExisted = _repository.GetPeopleList().Contains(newPersonObject);
+
+                if (isNewPersonExisted == true)
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                }
+                else
+                {
+                    _repository.AddPerson(new Person(newPersonObject.Name));
+
+                    var options = new JsonSerializerOptions { WriteIndented = true };
+                    var buffer = JsonSerializer.SerializeToUtf8Bytes(new Person(newPersonObject.Name), options);
+                    context.Response.ContentLength64 = buffer.Length;
+                    context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                    context.Response.StatusCode = (int)HttpStatusCode.OK;
+                }
+            }
+        }
+
     }
 }
