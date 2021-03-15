@@ -42,6 +42,22 @@ namespace WebApplication_Tests
         }
 
         [Fact]
+        public void GetPeople_RespondListOfPeopleInJsonFormatAndCorrectStatusCode()
+        {
+            var request = Mock.Of<IRequest>();
+            var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
+            var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+            _requestHandler.GetPeople(context);
+
+            Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+
+            response.OutputStream.Position = 0;
+            var actualResponse = new StreamReader(response.OutputStream, Encoding.UTF8).ReadToEnd();
+
+            Assert.Equal("[\n  {\n    \"Name\": \"Tiffany\"\n  }\n]", actualResponse);
+        }
+
+        [Fact]
         public void CreatePerson_NewPerson_AddPersonToRepositoryAndRespondOKStatusAndNewPersonInJsonFormat()
         {
             var request = Mock.Of<IRequest>(r =>
@@ -63,7 +79,7 @@ namespace WebApplication_Tests
         public void CreatePerson_ExistingPerson_RespondConflictStatus()
         {
             var request = Mock.Of<IRequest>(r =>
-                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) && r.ContentEncoding == Encoding.UTF8
+                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) && r.ContentEncoding == Encoding.UTF8 
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
@@ -73,19 +89,21 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void GetPeople_RespondListOfPeopleInJsonFormatAndCorrectStatusCode()
+        public void UpdatePersonRequest_UpdatePersonInRepositoryAndRespondOKStatusAndUpdatedPersonInJsonFormat()
         {
-            var request = Mock.Of<IRequest>();
+            var request = Mock.Of<IRequest>(r =>
+                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiff\"}")) && r.ContentEncoding == Encoding.UTF8 && r.Url == new Uri("/people/Tiffany")
+                );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
-            _requestHandler.GetPeople(context);
+            _requestHandler.HandleUpdatePerson(context);
 
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
 
             response.OutputStream.Position = 0;
             var actualResponse = new StreamReader(response.OutputStream, Encoding.UTF8).ReadToEnd();
 
-            Assert.Equal("[\n  {\n    \"Name\": \"Tiffany\"\n  }\n]", actualResponse);
+            Assert.Equal("{\n  \"Name\": \"Tiff\"\n}", actualResponse);
         }
     }
 }

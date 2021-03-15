@@ -64,5 +64,24 @@ namespace WebApplication
             }
         }
 
+        public void HandleUpdatePerson(IContext context)
+        {
+            using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+            {
+                var newPerson = reader.ReadToEnd();
+                var newPersonObject = JsonSerializer.Deserialize<Person>(newPerson);
+                
+                var segments = context.Request.Url.Segments;
+                var existingPerson = new Person(segments[2]);
+                _repository.UpdatePerson(existingPerson, new Person(newPersonObject.Name));
+
+                var options = new JsonSerializerOptions { WriteIndented = true };
+                var buffer = JsonSerializer.SerializeToUtf8Bytes(new Person(newPersonObject.Name), options);
+                context.Response.ContentLength64 = buffer.Length;
+                context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                context.Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+        }
+
     }
 }

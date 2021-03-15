@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -14,6 +15,8 @@ namespace WebApplication
     {
         public Stream InputStream { get; }
         public Encoding ContentEncoding { get; }
+        public Uri Url {get;}
+
     }
 
     public interface IResponse

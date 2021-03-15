@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -5,7 +6,7 @@ using System.Text;
 namespace WebApplication
 {
 
-public class Context : IContext
+    public class Context : IContext
     {
         public Context(HttpListenerContext context)
         {
@@ -25,20 +26,21 @@ public class Context : IContext
     public class Request : IRequest
     {
         private readonly HttpListenerRequest _request;
-        
+
         public Request(HttpListenerRequest request)
         {
             _request = request;
         }
-        
+
         public Stream InputStream => _request.InputStream;
         public Encoding ContentEncoding => _request.ContentEncoding;
+        public Uri Url => _request.Url;
     }
 
     public class Response : IResponse
     {
         private readonly HttpListenerResponse _response;
-        
+
         public Response(HttpListenerResponse response)
         {
             _response = response;
@@ -49,7 +51,7 @@ public class Context : IContext
             get => _response.ContentLength64;
             set => _response.ContentLength64 = value;
         }
-        
+
         public int StatusCode
         {
             get => _response.StatusCode;
