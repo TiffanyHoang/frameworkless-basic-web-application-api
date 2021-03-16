@@ -6,10 +6,7 @@ namespace WebApplication
     public class DateTimeManager
     {
         private DateTime time;
-        public DateTimeManager()
-        {
-            time = new DateTime();
-        }
+        public DateTimeManager() => time = new DateTime();
         public string GetCurrentTime()
         {
             time = DateTime.Now;

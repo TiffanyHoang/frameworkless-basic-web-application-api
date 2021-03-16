@@ -1,5 +1,6 @@
 using Xunit;
 using System.Collections.Generic;
+using WebApplication.Repositories;
 using WebApplication;
 
 namespace WebApplication_Tests
@@ -19,7 +20,6 @@ namespace WebApplication_Tests
             var expected = new List<Person>{
                                 new Person("Tiffany")
                             };
-
             Assert.Equal(expected, actual);
         }
 
@@ -32,7 +32,6 @@ namespace WebApplication_Tests
                                 new Person("Tiffany"),
                                 new Person("DS")
                             };
-
             Assert.Equal(expected, actual);
         }
 
@@ -42,7 +41,6 @@ namespace WebApplication_Tests
             _repository.DeletePerson(new Person("Tiffany"));
             var actual = _repository.GetPeopleList();
             var expected = new List<Person>();
-
             Assert.Equal(expected, actual);
         }
 
@@ -58,7 +56,6 @@ namespace WebApplication_Tests
                                 new Person("Tiffany"),
                                 new Person("Mattias"),
                             };
-
             Assert.Equal(expected, actual);
         }
     }

@@ -1,7 +1,7 @@
 
 namespace WebApplication
 {
-    public class Route 
+    public class RouteController
     {
 
     }

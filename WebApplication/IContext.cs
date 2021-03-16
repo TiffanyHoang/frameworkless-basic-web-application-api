@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Net;
 using System.Text;
 
 namespace WebApplication
@@ -15,8 +14,8 @@ namespace WebApplication
     {
         public Stream InputStream { get; }
         public Encoding ContentEncoding { get; }
-        public Uri Url {get;}
-
+        public Uri Url { get; }
+        public string HttpMethod { get; }
     }
 
     public interface IResponse
