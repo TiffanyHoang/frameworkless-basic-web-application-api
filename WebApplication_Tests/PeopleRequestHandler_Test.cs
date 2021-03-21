@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 using System.Net;
-using WebApplication.Server.RequestHandler;
+using WebApplication.Server.RequestHandlers;
 using WebApplication;
 using System.Net.Http;
 using System.IO;
