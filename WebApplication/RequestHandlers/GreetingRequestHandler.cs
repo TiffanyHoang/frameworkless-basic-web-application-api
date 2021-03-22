@@ -1,9 +1,7 @@
-using System.IO;
 using System.Net;
-using System.Text.Json;
 using WebApplication.Repositories;
 
-namespace WebApplication.Server.RequestHandlers
+namespace WebApplication.RequestHandlers
 {
     public class GreetingRequestHandler
     {

@@ -1,4 +1,4 @@
-@serverPrefix = http://localhost:8080
+@serverPrefix = http://localhost:8081
 
 GET {{serverPrefix}}
 
@@ -14,10 +14,22 @@ POST {{serverPrefix}}/people
     "Name":"DS"
 }
 
-### 
+###
 
-DELETE  {{serverPrefix}}/people
+POST {{serverPrefix}}/people
 
 {
-    "Name":"DS"
+    "Name":"Mattias"
 }
+
+###
+
+PUT {{serverPrefix}}/people/DS
+
+{
+    "Name":"DSTeoh"
+}
+### 
+
+DELETE  {{serverPrefix}}/people/Mattias
+
