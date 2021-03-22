@@ -12,12 +12,12 @@ using WebApplication.Repositories;
 
 namespace WebApplication_Tests
 {
-    public class RequestHandler_Test
+    public class PeopleRequestHandler_Test
     {
         private readonly Repository _repository;
         private readonly PeopleRequestHandler _peopleRequestHandler;
         private HttpClient _client;
-        public RequestHandler_Test()
+        public PeopleRequestHandler_Test()
         {
             _repository = new Repository();
             _peopleRequestHandler = new PeopleRequestHandler(_repository);
