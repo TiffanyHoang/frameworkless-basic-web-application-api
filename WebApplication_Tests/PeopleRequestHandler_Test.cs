@@ -25,7 +25,7 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void HandleGetPeople_RespondListOfPeopleInJsonFormatAndCorrectStatusCode()
+        public void HandleGetPeople_RespondListOfPeopleInJsonFormatAndOKStatusCode()
         {
             var request = Mock.Of<IRequest>(r => r.HttpMethod == "GET");
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
