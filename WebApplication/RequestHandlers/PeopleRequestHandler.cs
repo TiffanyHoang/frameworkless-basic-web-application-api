@@ -24,16 +24,16 @@ namespace WebApplication.RequestHandlers
             switch (_request.HttpMethod)
             {
                 case "GET":
-                    HandleGetPeople();
+                    Get();
                     break;
                 case "POST":
-                    HandleCreatePerson();
+                    Create();
                     break;
                 case "PUT":
-                    HandleUpdatePerson();
+                    Update();
                     break;
                 case "DELETE":
-                    HandleDeletePerson();
+                    Delete();
                     break;
                 default:
                     HandleInvalidVerbRequest();
@@ -41,19 +41,19 @@ namespace WebApplication.RequestHandlers
             }
         }
         
-        private void HandleGetPeople()
+        private void Get()
         {
             SerialiseJson(_repository.GetPeopleList());
             _response.StatusCode = (int)HttpStatusCode.OK;
         }
 
-        private void HandleCreatePerson()
+        private void Create()
         {
             using (var reader = new StreamReader(_request.InputStream, _request.ContentEncoding))
             {
-                var newPerson = reader.ReadToEnd();
-                var newPersonObject = JsonSerializer.Deserialize<Person>(newPerson);
-                var isNewPersonExisted = _repository.GetPeopleList().Contains(newPersonObject);
+                var personJson = reader.ReadToEnd();
+                var person = JsonSerializer.Deserialize<Person>(personJson);
+                var isNewPersonExisted = _repository.GetPeopleList().Contains(person);
 
                 if (isNewPersonExisted == true)
                 {
@@ -61,28 +61,28 @@ namespace WebApplication.RequestHandlers
                     return;
                 }
 
-                _repository.AddPerson(new Person(newPersonObject.Name));
-                SerialiseJson(new Person(newPersonObject.Name));
+                _repository.AddPerson(new Person(person.Name));
+                SerialiseJson(new Person(person.Name));
                 _response.StatusCode = (int)HttpStatusCode.OK;
             }
         }
-        private void HandleUpdatePerson()
+        private void Update()
         {
             using (var reader = new StreamReader(_request.InputStream, _request.ContentEncoding))
             {
-                var newPerson = reader.ReadToEnd();
-                var newPersonObject = JsonSerializer.Deserialize<Person>(newPerson);
+                var personJson = reader.ReadToEnd();
+                var person = JsonSerializer.Deserialize<Person>(personJson);
 
                 var segments = _request.Url.Segments;
                 var oldPersonObject = new Person(segments[2]);
 
-                if (oldPersonObject.Name == newPersonObject.Name)
+                if (oldPersonObject.Name == person.Name)
                 {
                     _response.StatusCode = (int)HttpStatusCode.Conflict;
                     return;
                 }
                 
-                if (_repository.defaultPersonName == newPersonObject.Name)
+                if (_repository.defaultPersonName == person.Name)
                 {
                     _response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -94,14 +94,14 @@ namespace WebApplication.RequestHandlers
                     return;
                 }
                
-                _repository.UpdatePerson(oldPersonObject, new Person(newPersonObject.Name));
+                _repository.UpdatePerson(oldPersonObject, new Person(person.Name));
 
-                SerialiseJson(new Person(newPersonObject.Name));
+                SerialiseJson(new Person(person.Name));
                 _response.StatusCode = (int)HttpStatusCode.OK;
             }
         }
 
-        private void HandleDeletePerson()
+        private void Delete()
         {
             var segments = _request.Url.Segments;
             var deletedPerson = new Person(segments[2]);
