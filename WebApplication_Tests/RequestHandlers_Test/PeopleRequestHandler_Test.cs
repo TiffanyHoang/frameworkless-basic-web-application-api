@@ -16,12 +16,10 @@ namespace WebApplication_Tests
     {
         private readonly Repository _repository;
         private readonly PeopleRequestHandler _peopleRequestHandler;
-        private HttpClient _client;
         public PeopleRequestHandler_Test()
         {
             _repository = new Repository();
             _peopleRequestHandler = new PeopleRequestHandler(_repository);
-            _client = new HttpClient();
         }
 
         [Fact]

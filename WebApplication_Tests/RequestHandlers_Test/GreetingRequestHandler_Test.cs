@@ -17,12 +17,10 @@ namespace WebApplication_Tests
 
         private readonly Repository _repository;
         private readonly GreetingRequestHandler _greetingRequestHandler;
-        private HttpClient _client;
         public GreetingRequestHandler_Test()
         {
             _repository = new Repository();
             _greetingRequestHandler = new GreetingRequestHandler(_repository);
-            _client = new HttpClient();
         }
         [Fact]
         public void HandleGreeting_ReturnCorrectGreetingMessage()
