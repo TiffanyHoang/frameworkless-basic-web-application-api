@@ -201,5 +201,19 @@ namespace WebApplication_Tests
             
             Assert.Equal((int)HttpStatusCode.Forbidden, response.StatusCode);
         }
+
+        [Fact]
+        public void InvalidMethod_RespondMethodNotAllowedStatus()
+        {
+            var request = Mock.Of<IRequest>(r => 
+                r.HttpMethod == "INVALIDMETHOD" &&
+                r.Url == new Uri("/people/Tiffany"));
+            var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
+            var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+
+            _peopleRequestHandler.HandleRequest(context);
+            
+            Assert.Equal((int)HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        }
     }
 }

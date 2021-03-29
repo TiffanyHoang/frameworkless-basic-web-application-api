@@ -6,7 +6,7 @@ using WebApplication.Repositories;
 namespace WebApplication.RequestHandlers
 {
 
-    public class PeopleRequestHandler:IPeopleRequestHandler
+    public class PeopleRequestHandler : IPeopleRequestHandler
     {
         private readonly Repository _repository;
         private IRequest _request;
@@ -40,7 +40,7 @@ namespace WebApplication.RequestHandlers
                     break;
             }
         }
-        
+
         private void Get()
         {
             SerialiseJson(_repository.GetPeopleList());
@@ -81,7 +81,7 @@ namespace WebApplication.RequestHandlers
                     _response.StatusCode = (int)HttpStatusCode.Conflict;
                     return;
                 }
-                
+
                 if (_repository.defaultPersonName == person.Name)
                 {
                     _response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -93,7 +93,7 @@ namespace WebApplication.RequestHandlers
                     _response.StatusCode = (int)HttpStatusCode.NotFound;
                     return;
                 }
-               
+
                 _repository.UpdatePerson(oldPersonObject, new Person(person.Name));
 
                 SerialiseJson(new Person(person.Name));
@@ -105,19 +105,19 @@ namespace WebApplication.RequestHandlers
         {
             var segments = _request.Url.Segments;
             var deletedPerson = new Person(segments[2]);
-            
+
             if (!_repository.GetPeopleList().Contains(deletedPerson))
             {
                 _response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
             }
-            
+
             if (deletedPerson.Name == _repository.defaultPersonName)
             {
                 _response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
             }
-            
+
             _repository.DeletePerson(deletedPerson);
             _response.StatusCode = (int)HttpStatusCode.OK;
         }
@@ -130,6 +130,10 @@ namespace WebApplication.RequestHandlers
             _response.OutputStream.Write(buffer, 0, buffer.Length);
         }
 
-        private void HandleInvalidVerbRequest() {}
+        private void HandleInvalidVerbRequest()
+        {
+            _response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
+            _response.Headers.Add("Allow", "GET, POST, PUT, DELETE");
+        }
     }
 }

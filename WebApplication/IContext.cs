@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net;
 using System.Text;
 
 namespace WebApplication
@@ -23,5 +24,6 @@ namespace WebApplication
         Stream OutputStream { get; }
         long ContentLength64 { get; set; }
         int StatusCode { get; set; }
+        WebHeaderCollection Headers { get; }
     }
 }
