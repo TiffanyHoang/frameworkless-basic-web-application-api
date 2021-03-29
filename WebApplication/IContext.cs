@@ -6,22 +6,22 @@ namespace WebApplication
 {
     public interface IContext
     {
-        public IRequest Request { get; }
-        public IResponse Response { get; }
+        IRequest Request { get; }
+        IResponse Response { get; }
     }
 
     public interface IRequest
     {
-        public Stream InputStream { get; }
-        public Encoding ContentEncoding { get; }
-        public Uri Url { get; }
-        public string HttpMethod { get; }
+        Stream InputStream { get; }
+        Encoding ContentEncoding { get; }
+        Uri Url { get; }
+        string HttpMethod { get; }
     }
 
     public interface IResponse
     {
-        public Stream OutputStream { get; }
-        public long ContentLength64 { get; set; }
-        public int StatusCode { get; set; }
+        Stream OutputStream { get; }
+        long ContentLength64 { get; set; }
+        int StatusCode { get; set; }
     }
 }

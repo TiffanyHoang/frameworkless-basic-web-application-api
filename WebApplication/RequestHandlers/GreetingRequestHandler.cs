@@ -3,7 +3,7 @@ using WebApplication.Repositories;
 
 namespace WebApplication.RequestHandlers
 {
-    public class GreetingRequestHandler
+    public class GreetingRequestHandler:IGreetingRequestHandler
     {
         private readonly Repository _repository;
         private IRequest _request;

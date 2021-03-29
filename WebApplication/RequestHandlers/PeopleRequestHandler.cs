@@ -6,7 +6,7 @@ using WebApplication.Repositories;
 namespace WebApplication.RequestHandlers
 {
 
-    public class PeopleRequestHandler
+    public class PeopleRequestHandler:IPeopleRequestHandler
     {
         private readonly Repository _repository;
         private IRequest _request;

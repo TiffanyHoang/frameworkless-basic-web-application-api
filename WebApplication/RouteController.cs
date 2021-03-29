@@ -7,13 +7,13 @@ namespace WebApplication
 {
     public class RouteController
     {
-        private readonly GreetingRequestHandler _greetingRequestHandler;
-        private readonly PeopleRequestHandler _peopleRequestHandler;
+        private readonly IGreetingRequestHandler _greetingRequestHandler;
+        private readonly IPeopleRequestHandler _peopleRequestHandler;
 
-        public RouteController(Repository repository)
+        public RouteController(Repository repository, IGreetingRequestHandler greetingRequestHandler, IPeopleRequestHandler peopleRequestHandler)
         {
-            _greetingRequestHandler = new GreetingRequestHandler(repository);
-            _peopleRequestHandler = new PeopleRequestHandler(repository);
+            _greetingRequestHandler = greetingRequestHandler;
+            _peopleRequestHandler = peopleRequestHandler;
         }
 
         public void RequestRouter(IContext context)

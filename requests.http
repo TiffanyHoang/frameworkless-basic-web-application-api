@@ -1,4 +1,4 @@
-@serverPrefix = http://localhost:8081
+@serverPrefix = http://localhost:8080
 
 GET {{serverPrefix}}
 

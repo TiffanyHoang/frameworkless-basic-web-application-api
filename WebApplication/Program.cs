@@ -2,6 +2,8 @@
 using System.Net;
 using System.Threading.Tasks;
 using WebApplication.Repositories;
+using WebApplication.RequestHandlers;
+
 namespace WebApplication
 {
     class Program
@@ -13,13 +15,15 @@ namespace WebApplication
         static void Run()
         {
             var listener = new HttpListener();
-            listener.Prefixes.Add($"http://*:8081/");
+            listener.Prefixes.Add($"http://*:8080/");
             listener.Start();
 
             Console.WriteLine("Server started");
 
             Repository repository = new Repository();
-            RouteController routeController = new RouteController(repository);
+            IGreetingRequestHandler greetingRequestHandler = new GreetingRequestHandler(repository);
+            IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(repository);
+            RouteController routeController = new RouteController(repository, greetingRequestHandler, peopleRequestHandler);
 
             while (true)
             {
