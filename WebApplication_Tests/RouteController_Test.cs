@@ -5,6 +5,7 @@ using System.IO;
 using Moq;
 using WebApplication.Repositories;
 using System;
+using System.Net;
 
 namespace WebApplication_Tests
 {
@@ -49,6 +50,24 @@ namespace WebApplication_Tests
             routeController.RequestRouter(context);
 
             peopleRequestHandler.Verify(x => x.HandleRequest(context), Times.Once);
+        }
+
+        [Fact]
+        public void RequestRouter_UnvalidPath_ReturnNotFoundStatus()
+        {
+            var request = Mock.Of<IRequest>(r => r.Url == new Uri("http://localhost:8080/Unvalid"));
+            var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
+            var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+
+            IGreetingRequestHandler greetingRequestHandler = new GreetingRequestHandler(_repository);
+
+            IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(_repository);
+
+            RouteController routeController = new RouteController(_repository, greetingRequestHandler, peopleRequestHandler);
+
+            routeController.RequestRouter(context);
+
+            Assert.Equal((int)HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }
