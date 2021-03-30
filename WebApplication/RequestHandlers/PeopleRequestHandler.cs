@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text.Json;
@@ -133,7 +134,6 @@ namespace WebApplication.RequestHandlers
         private void HandleInvalidVerbRequest()
         {
             _response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
-            _response.Headers.Add("Allow", "GET, POST, PUT, DELETE");
         }
     }
 }

@@ -42,7 +42,5 @@ namespace WebApplication
         }
         public Response(HttpListenerResponse response) => _response = response;
         public Stream OutputStream => _response.OutputStream;
-
-        public WebHeaderCollection Headers => _response.Headers;
     }
 }

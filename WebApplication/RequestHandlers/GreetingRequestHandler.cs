@@ -48,7 +48,6 @@ namespace WebApplication.RequestHandlers
         private void HandleInvalidVerbRequest()
         {
             _response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
-            _response.Headers.Add("Allow", "GET, POST, PUT, DELETE");
         }
     }
 }

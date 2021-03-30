@@ -3,7 +3,6 @@ using Xunit;
 using System.Net;
 using WebApplication.RequestHandlers;
 using WebApplication;
-using System.Net.Http;
 using System.IO;
 using Moq;
 using System.Text;
@@ -207,12 +206,11 @@ namespace WebApplication_Tests
         {
             var request = Mock.Of<IRequest>(r => 
                 r.HttpMethod == "INVALIDMETHOD" &&
-                r.Url == new Uri("/people/Tiffany"));
+                r.Url == new Uri("/people"));
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
             _peopleRequestHandler.HandleRequest(context);
-            
             Assert.Equal((int)HttpStatusCode.MethodNotAllowed, response.StatusCode);
         }
     }

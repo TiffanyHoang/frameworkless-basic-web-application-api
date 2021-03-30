@@ -24,6 +24,5 @@ namespace WebApplication
         Stream OutputStream { get; }
         long ContentLength64 { get; set; }
         int StatusCode { get; set; }
-        WebHeaderCollection Headers { get; }
     }
 }

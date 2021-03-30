@@ -42,6 +42,19 @@ namespace WebApplication_Tests
             var actualResponse = new StreamReader(response.OutputStream, Encoding.UTF8).ReadToEnd();
             Assert.Equal(expectedResponse, actualResponse);
         }
+
+        [Fact]
+        public void InvalidMethod_RespondMethodNotAllowedStatus()
+        {
+            var request = Mock.Of<IRequest>(r => 
+                r.HttpMethod == "INVALIDMETHOD");
+            var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
+            var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+
+            _greetingRequestHandler.HandleRequest(context);
+            
+            Assert.Equal((int)HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        }
     }
 
 }
