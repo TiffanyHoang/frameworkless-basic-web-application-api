@@ -14,12 +14,7 @@ namespace WebApplication.Services
         {
             _repository = repository;
         }
-
-        public void AddPerson(Person person)
-        {
-            _repository.AddPerson(person);
-        }
-
+        
         public List<Person> GetPeopleList()
         {
             try

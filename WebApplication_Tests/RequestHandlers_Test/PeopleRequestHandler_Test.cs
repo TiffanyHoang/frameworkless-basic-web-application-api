@@ -80,7 +80,7 @@ namespace WebApplication_Tests
         [Fact]
         public void HandleUpdatePerson_RespondOKStatusAndUpdatedPersonInJsonFormat()
         {
-            _peopleService.AddPerson(new Person("DS"));
+            _peopleService.CreatePerson(new Person("DS"));
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DSTeoh\"}")) &&
@@ -121,7 +121,7 @@ namespace WebApplication_Tests
         [Fact]
         public void HandleUpdatePerson_UpdatedNameSameAsDefaultPersonName_RespondForbiddenStatus()
         {
-            _peopleService.AddPerson(new Person("Tiff"));
+            _peopleService.CreatePerson(new Person("Tiff"));
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) &&
@@ -156,7 +156,7 @@ namespace WebApplication_Tests
         [Fact]
         public void HandleDeletePerson_DeletePersonInRepositoryAndRespondOKStatus()
         {
-            _peopleService.AddPerson(new Person("Mattias"));
+            _peopleService.CreatePerson(new Person("Mattias"));
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "DELETE" &&
                 r.Url == new Uri("/people/Mattias"));
