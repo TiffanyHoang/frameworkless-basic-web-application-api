@@ -8,6 +8,7 @@ using Moq;
 using System.Text;
 using System.Collections.Generic;
 using WebApplication.Repositories;
+using WebApplication.Http;
 
 namespace WebApplication_Tests
 {

@@ -1,19 +1,17 @@
 using Xunit;
 using System;
 using System.Net.Http;
-using System.Net;
 using WebApplication;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace WebApplication_Tests
 {
-    public class Integration_Test : IDisposable
+    public class Server_Test : IDisposable
     {
         private readonly HttpClient _client;
         private readonly Server _server;
-        public Integration_Test()
+        public Server_Test()
         {
             _server = new Server();
             _client = new HttpClient();

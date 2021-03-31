@@ -6,6 +6,7 @@ using Moq;
 using WebApplication.Repositories;
 using System;
 using System.Net;
+using WebApplication.Http;
 
 namespace WebApplication_Tests
 {

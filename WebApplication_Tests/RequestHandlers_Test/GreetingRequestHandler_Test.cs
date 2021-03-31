@@ -2,13 +2,11 @@ using System;
 using Xunit;
 using System.Net;
 using WebApplication.RequestHandlers;
-using WebApplication;
-using System.Net.Http;
 using System.IO;
 using Moq;
 using System.Text;
-using System.Collections.Generic;
 using WebApplication.Repositories;
+using WebApplication.Http;
 
 namespace WebApplication_Tests
 {

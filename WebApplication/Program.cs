@@ -1,10 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using WebApplication.Repositories;
-using WebApplication.RequestHandlers;
-
-namespace WebApplication
+﻿namespace WebApplication
 {
     class Program
     {

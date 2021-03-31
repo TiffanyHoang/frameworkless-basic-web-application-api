@@ -1,3 +1,5 @@
+using WebApplication.Http;
+
 namespace WebApplication.RequestHandlers
 {
     public interface IPeopleRequestHandler

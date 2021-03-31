@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace WebApplication
+namespace WebApplication.Http
 {
     public class Context : IContext
     {
