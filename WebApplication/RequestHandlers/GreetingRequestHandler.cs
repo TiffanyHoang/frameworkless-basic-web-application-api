@@ -1,17 +1,19 @@
 using System.Net;
 using WebApplication.Http;
 using WebApplication.Repositories;
+using WebApplication.Services;
 
 namespace WebApplication.RequestHandlers
 {
-    public class GreetingRequestHandler:IGreetingRequestHandler
+    public class GreetingRequestHandler : IGreetingRequestHandler
     {
-        private readonly Repository _repository;
         private IRequest _request;
         private IResponse _response;
-        public GreetingRequestHandler(Repository repository)
+        private GreetingService _greetingService;
+
+        public GreetingRequestHandler(GreetingService greetingService)
         {
-            _repository = repository;
+            _greetingService = greetingService;
         }
         public void HandleRequest(IContext context)
         {
@@ -31,16 +33,8 @@ namespace WebApplication.RequestHandlers
 
         private void Greeting()
         {
-            DateTimeManager dateTimeManager = new DateTimeManager();
-            var timeText = $"the time on the server is {dateTimeManager.GetCurrentTime()} on {dateTimeManager.GetCurrentDate()}";
-
-            var peopleListString = "";
-            foreach (var person in _repository.GetPeopleList())
-            {
-                peopleListString += person.Name + ' ';
-            }
-
-            var buffer = System.Text.Encoding.UTF8.GetBytes($"Hello {peopleListString}- {timeText}");
+            var result = _greetingService.Greeting();
+            var buffer = System.Text.Encoding.UTF8.GetBytes(result);
             _response.ContentLength64 = buffer.Length;
             _response.OutputStream.Write(buffer, 0, buffer.Length);
             _response.StatusCode = (int)HttpStatusCode.OK;

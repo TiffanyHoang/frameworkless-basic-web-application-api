@@ -7,15 +7,21 @@ using WebApplication.Repositories;
 using System;
 using System.Net;
 using WebApplication.Http;
+using WebApplication.Services;
 
 namespace WebApplication_Tests
 {
     public class RouteController_Test
     {
-        private readonly Repository _repository;
+        private PeopleService _peopleService;
+        private GreetingService _greetingService;
+
         public RouteController_Test()
         {
-            _repository = new Repository();
+            var repository = new Repository();
+            _peopleService = new PeopleService(repository);
+            _greetingService = new GreetingService(repository);
+
         }
         [Fact]
         public void RequestRouter_Root_ShouldCallGreetingRequestHandler()
@@ -26,9 +32,9 @@ namespace WebApplication_Tests
 
             var greetingRequestHandler = new Mock<IGreetingRequestHandler>();
 
-            IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(_repository);
+            IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(_peopleService);
 
-            RouteController routeController = new RouteController(_repository, greetingRequestHandler.Object, peopleRequestHandler);
+            RouteController routeController = new RouteController( greetingRequestHandler.Object, peopleRequestHandler);
 
             routeController.RequestRouter(context);
 
@@ -42,11 +48,11 @@ namespace WebApplication_Tests
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
-            IGreetingRequestHandler greetingRequestHandler = new GreetingRequestHandler(_repository);
+            IGreetingRequestHandler greetingRequestHandler = new GreetingRequestHandler(_greetingService);
 
             var peopleRequestHandler = new Mock<IPeopleRequestHandler>();
 
-            RouteController routeController = new RouteController(_repository, greetingRequestHandler, peopleRequestHandler.Object);
+            RouteController routeController = new RouteController( greetingRequestHandler, peopleRequestHandler.Object);
 
             routeController.RequestRouter(context);
 
@@ -60,11 +66,11 @@ namespace WebApplication_Tests
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
-            IGreetingRequestHandler greetingRequestHandler = new GreetingRequestHandler(_repository);
+            IGreetingRequestHandler greetingRequestHandler = new GreetingRequestHandler(_greetingService);
 
-            IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(_repository);
+            IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(_peopleService);
 
-            RouteController routeController = new RouteController(_repository, greetingRequestHandler, peopleRequestHandler);
+            RouteController routeController = new RouteController(greetingRequestHandler, peopleRequestHandler);
 
             routeController.RequestRouter(context);
 

@@ -2,19 +2,19 @@ using System.IO;
 using System.Net;
 using System.Text.Json;
 using WebApplication.Http;
-using WebApplication.Repositories;
+using WebApplication.Services;
 
 namespace WebApplication.RequestHandlers
 {
 
     public class PeopleRequestHandler : IPeopleRequestHandler
     {
-        private readonly Repository _repository;
         private IRequest _request;
         private IResponse _response;
-        public PeopleRequestHandler(Repository repository)
+        private PeopleService _peopleService;
+        public PeopleRequestHandler(PeopleService peopleService)
         {
-            _repository = repository;
+            _peopleService = peopleService;
         }
 
         public void HandleRequest(IContext context)
@@ -44,7 +44,8 @@ namespace WebApplication.RequestHandlers
 
         private void Get()
         {
-            SerialiseJson(_repository.GetPeopleList());
+            var peopleList = _peopleService.GetPeopleList();
+            SerialiseJson(peopleList);
             _response.StatusCode = (int)HttpStatusCode.OK;
         }
 
@@ -54,18 +55,19 @@ namespace WebApplication.RequestHandlers
             {
                 var personJson = reader.ReadToEnd();
                 var person = JsonSerializer.Deserialize<Person>(personJson);
-                var isNewPersonExisted = _repository.GetPeopleList().Contains(person);
-
-                if (isNewPersonExisted == true)
+            
+                var result = _peopleService.CreatePerson(person);
+                
+                if (result.statusCode == (int)HttpStatusCode.Conflict)
                 {
-                    _response.StatusCode = (int)HttpStatusCode.Conflict;
+                    _response.StatusCode = result.statusCode;
                     return;
                 }
 
-                _repository.AddPerson(new Person(person.Name));
-                SerialiseJson(new Person(person.Name));
-                _response.StatusCode = (int)HttpStatusCode.OK;
+                SerialiseJson(result.person);
+                _response.StatusCode = result.statusCode;
             }
+
         }
         private void Update()
         {
@@ -75,30 +77,29 @@ namespace WebApplication.RequestHandlers
                 var person = JsonSerializer.Deserialize<Person>(personJson);
 
                 var segments = _request.Url.Segments;
-                var oldPersonObject = new Person(segments[2]);
+                var oldPerson = new Person(segments[2]);
 
-                if (oldPersonObject.Name == person.Name)
+                if (oldPerson.Name == person.Name)
                 {
                     _response.StatusCode = (int)HttpStatusCode.Conflict;
                     return;
                 }
 
-                if (_repository.defaultPersonName == person.Name)
+                var result = _peopleService.UpdatePerson(person, oldPerson);
+                if (result.statusCode == (int)HttpStatusCode.Forbidden)
                 {
-                    _response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    _response.StatusCode = result.statusCode;
                     return;
                 }
 
-                if (!_repository.GetPeopleList().Contains(oldPersonObject))
+                if (result.statusCode == (int)HttpStatusCode.NotFound)
                 {
-                    _response.StatusCode = (int)HttpStatusCode.NotFound;
+                    _response.StatusCode = result.statusCode;
                     return;
                 }
 
-                _repository.UpdatePerson(oldPersonObject, new Person(person.Name));
-
-                SerialiseJson(new Person(person.Name));
-                _response.StatusCode = (int)HttpStatusCode.OK;
+                SerialiseJson(result.person);
+                _response.StatusCode = result.statusCode;
             }
         }
 
@@ -107,20 +108,21 @@ namespace WebApplication.RequestHandlers
             var segments = _request.Url.Segments;
             var deletedPerson = new Person(segments[2]);
 
-            if (!_repository.GetPeopleList().Contains(deletedPerson))
+            var statusCode = _peopleService.DeletePerson(deletedPerson);
+
+            if (statusCode == (int)HttpStatusCode.NotFound)
             {
-                _response.StatusCode = (int)HttpStatusCode.NotFound;
+                _response.StatusCode = statusCode;
                 return;
             }
 
-            if (deletedPerson.Name == _repository.defaultPersonName)
+            if (statusCode == (int)HttpStatusCode.Forbidden)
             {
-                _response.StatusCode = (int)HttpStatusCode.Forbidden;
+                _response.StatusCode = statusCode;
                 return;
             }
 
-            _repository.DeletePerson(deletedPerson);
-            _response.StatusCode = (int)HttpStatusCode.OK;
+            _response.StatusCode = statusCode;
         }
 
         private void SerialiseJson(object obj)

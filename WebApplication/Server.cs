@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using WebApplication.Http;
 using WebApplication.Repositories;
 using WebApplication.RequestHandlers;
+using WebApplication.Services;
 
 namespace WebApplication
 {
@@ -19,11 +20,15 @@ namespace WebApplication
 
             Repository repository = new Repository();
 
-            IGreetingRequestHandler greetingRequestHandler = new GreetingRequestHandler(repository);
+            GreetingService greetingService = new GreetingService(repository);
 
-            IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(repository);
+            IGreetingRequestHandler greetingRequestHandler = new GreetingRequestHandler(greetingService);
+            
+            PeopleService peopleService = new PeopleService(repository);
 
-            _routeController = new RouteController(repository, greetingRequestHandler, peopleRequestHandler);
+            IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(peopleService);
+
+            _routeController = new RouteController(greetingRequestHandler, peopleRequestHandler);
 
             _listener.Start();
             Console.WriteLine("Server started");

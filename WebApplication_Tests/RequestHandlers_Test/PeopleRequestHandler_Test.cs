@@ -7,19 +7,21 @@ using System.IO;
 using Moq;
 using System.Text;
 using System.Collections.Generic;
-using WebApplication.Repositories;
 using WebApplication.Http;
+using WebApplication.Services;
+using WebApplication.Repositories;
 
 namespace WebApplication_Tests
 {
     public class PeopleRequestHandler_Test
     {
-        private readonly Repository _repository;
+        private PeopleService _peopleService;
         private readonly PeopleRequestHandler _peopleRequestHandler;
         public PeopleRequestHandler_Test()
         {
-            _repository = new Repository();
-            _peopleRequestHandler = new PeopleRequestHandler(_repository);
+            var repository = new Repository();
+            _peopleService = new PeopleService(repository);
+            _peopleRequestHandler = new PeopleRequestHandler(_peopleService);
         }
 
         [Fact]
@@ -32,7 +34,7 @@ namespace WebApplication_Tests
             _peopleRequestHandler.HandleRequest(context);
 
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
-            
+
             response.OutputStream.Position = 0;
             var actualResponse = new StreamReader(response.OutputStream, Encoding.UTF8).ReadToEnd();
 
@@ -40,11 +42,11 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void HandleCreatePerson_NewPerson_AddPersonToRepositoryAndRespondOKStatusAndNewPersonInJsonFormat()
+        public void HandleCreatePerson_NewPerson_RespondOKStatusAndNewPersonInJsonFormat()
         {
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "POST" &&
-                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DS\"}")) && 
+                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DS\"}")) &&
                 r.ContentEncoding == Encoding.UTF8
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
@@ -52,11 +54,8 @@ namespace WebApplication_Tests
 
             _peopleRequestHandler.HandleRequest(context);
 
-            var expectedRepo = new List<Person> { new Person("Tiffany"), new Person("DS") };
-
-            Assert.Equal(expectedRepo, _repository.GetPeopleList());
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
-            
+
             response.OutputStream.Position = 0;
             var actualResponse = new StreamReader(response.OutputStream, Encoding.UTF8).ReadToEnd();
 
@@ -79,12 +78,12 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void HandleUpdatePerson_UpdatePersonInRepositoryAndRespondOKStatusAndUpdatedPersonInJsonFormat()
+        public void HandleUpdatePerson_RespondOKStatusAndUpdatedPersonInJsonFormat()
         {
-            _repository.AddPerson(new Person("DS"));
+            _peopleService.AddPerson(new Person("DS"));
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&
-                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DSTeoh\"}")) && 
+                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DSTeoh\"}")) &&
                 r.ContentEncoding == Encoding.UTF8 && r.Url == new Uri("/people/DS")
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
@@ -94,7 +93,6 @@ namespace WebApplication_Tests
 
             var expectedRepo = new List<Person> { new Person("Tiffany"), new Person("DSTeoh") };
 
-            Assert.Equal(expectedRepo, _repository.GetPeopleList());
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
 
             response.OutputStream.Position = 0;
@@ -109,7 +107,7 @@ namespace WebApplication_Tests
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) &&
-                r.ContentEncoding == Encoding.UTF8 && 
+                r.ContentEncoding == Encoding.UTF8 &&
                 r.Url == new Uri("/people/Tiffany")
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
@@ -123,11 +121,11 @@ namespace WebApplication_Tests
         [Fact]
         public void HandleUpdatePerson_UpdatedNameSameAsDefaultPersonName_RespondForbiddenStatus()
         {
-            _repository.AddPerson(new Person("Tiff"));
+            _peopleService.AddPerson(new Person("Tiff"));
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&
-                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) && 
-                r.ContentEncoding == Encoding.UTF8 && 
+                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) &&
+                r.ContentEncoding == Encoding.UTF8 &&
                 r.Url == new Uri("/people/Tiff")
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
@@ -143,8 +141,8 @@ namespace WebApplication_Tests
         {
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&
-                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DSTeoh\"}")) && 
-                r.ContentEncoding == Encoding.UTF8 && 
+                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DSTeoh\"}")) &&
+                r.ContentEncoding == Encoding.UTF8 &&
                 r.Url == new Uri("/people/DS")
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
@@ -158,9 +156,8 @@ namespace WebApplication_Tests
         [Fact]
         public void HandleDeletePerson_DeletePersonInRepositoryAndRespondOKStatus()
         {
-            _repository.AddPerson(new Person("DS"));
-            _repository.AddPerson(new Person("Mattias"));
-            var request = Mock.Of<IRequest>(r => 
+            _peopleService.AddPerson(new Person("Mattias"));
+            var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "DELETE" &&
                 r.Url == new Uri("/people/Mattias"));
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
@@ -168,16 +165,13 @@ namespace WebApplication_Tests
 
             _peopleRequestHandler.HandleRequest(context);
 
-            var expectedRepo = new List<Person> { new Person("Tiffany"), new Person("DS") };
-
-            Assert.Equal(expectedRepo, _repository.GetPeopleList());
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
         }
 
         [Fact]
         public void HandleDeletePerson_PersonIsNotExisted_RespondNotFoundStatus()
         {
-            var request = Mock.Of<IRequest>(r => 
+            var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "DELETE" &&
                 r.Url == new Uri("/people/Mattias"));
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
@@ -191,21 +185,21 @@ namespace WebApplication_Tests
         [Fact]
         public void HandleDeletePerson_PersonSameAsDefaultPerson_RespondForbiddenStatus()
         {
-            var request = Mock.Of<IRequest>(r => 
+            var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "DELETE" &&
                 r.Url == new Uri("/people/Tiffany"));
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
             _peopleRequestHandler.HandleRequest(context);
-            
+
             Assert.Equal((int)HttpStatusCode.Forbidden, response.StatusCode);
         }
 
         [Fact]
         public void InvalidMethod_RespondMethodNotAllowedStatus()
         {
-            var request = Mock.Of<IRequest>(r => 
+            var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "INVALIDMETHOD" &&
                 r.Url == new Uri("/people"));
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());

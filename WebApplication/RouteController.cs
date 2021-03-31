@@ -11,7 +11,7 @@ namespace WebApplication
         private readonly IGreetingRequestHandler _greetingRequestHandler;
         private readonly IPeopleRequestHandler _peopleRequestHandler;
 
-        public RouteController(Repository repository, IGreetingRequestHandler greetingRequestHandler, IPeopleRequestHandler peopleRequestHandler)
+        public RouteController( IGreetingRequestHandler greetingRequestHandler, IPeopleRequestHandler peopleRequestHandler)
         {
             _greetingRequestHandler = greetingRequestHandler;
             _peopleRequestHandler = peopleRequestHandler;
