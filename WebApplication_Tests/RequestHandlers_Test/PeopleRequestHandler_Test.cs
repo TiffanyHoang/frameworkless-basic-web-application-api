@@ -6,7 +6,6 @@ using WebApplication;
 using System.IO;
 using Moq;
 using System.Text;
-using System.Collections.Generic;
 using WebApplication.Http;
 using WebApplication.Services;
 using WebApplication.Repositories;
@@ -91,8 +90,6 @@ namespace WebApplication_Tests
 
             _peopleRequestHandler.HandleRequest(context);
 
-            var expectedRepo = new List<Person> { new Person("Tiffany"), new Person("DSTeoh") };
-
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
 
             response.OutputStream.Position = 0;
@@ -154,7 +151,7 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void HandleDeletePerson_DeletePersonInRepositoryAndRespondOKStatus()
+        public void HandleDeletePerson_RespondOKStatus()
         {
             _peopleService.CreatePerson(new Person("Mattias"));
             var request = Mock.Of<IRequest>(r =>
