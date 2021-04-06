@@ -29,7 +29,19 @@ PUT {{serverPrefix}}/people/DS
 {
     "Name":"DSTeoh"
 }
+
 ### 
 
-DELETE  {{serverPrefix}}/people/Mattias
+DELETE {{serverPrefix}}/people/Mattias
 
+###
+
+GET {{serverPrefix}}/invalidPath
+
+###
+
+POST {{serverPrefix}}
+
+###
+
+PATCH {{serverPrefix}}/people

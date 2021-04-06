@@ -1,40 +1,135 @@
-# Frameworkless Basic Web Application Kata
+# Frameworkless Web Application Kata
 
-It's the late 1990s and the internet has just begun to flourish. You have a brilliant idea to build a Hello World web application however there are no MVC frameworks for you to use. Your mission is to implement a basic Hello World web application without using any frameworks. 
+A .NET Core solution to [the Frameworkless Basic Web Application kata](https://github.com/MYOB-Technology/General_Developer/blob/main/katas/kata-frameworkless-basic-web-application/kata-frameworkless-basic-web-application.md) with [enhancements](https://github.com/MYOB-Technology/General_Developer/blob/main/katas/kata-frameworkless-basic-web-application/kata-frameworkless-basic-web-application-enhancements.md).
 
-When calling the web application from a browser it should return a greeting with your name and the current date/time of the server. For instance, if your name was Bob when hitting the web server (http://localhost:8080) the browser would display "Hello Bob - the time on the server is 10:48pm on 14 March 2018" 
+## Endpoints
+These are the supported endpoints along with example responses. Use your favourite HTTP client, such as Postman or REST client, to make requests!
 
-_(Yes, we know we said you were in the 1990s... but we want you to use your current servers date/time ;-))_
-
-Oh, and of course you are one of those new age eXtreme programmers so you need to have appropriate tests! To make your life easier we have got starting points for Java and C#  
-
-## To summarise 
-
-* Keep with standard libraries, don't use frameworks like Spring/Dropwizard or equivalent  
-* Try implement all the dispatching code manually.  
-* Include in your solution a test case for proving that the "greeting" portion of the system is functioning correctly.  
-
-## CSharp Starting Point
-
-If you are working in C#, a trivial web server that doesn't rely on
-ASP.NET Core follows. Note that it handles a single request at a time,
-synchronously. Converting it to be asynchronous, so as to be able to handle
-more than one request simultaneously, is a useful future exercise.
-
+## GET / 
+Return greeting message  
+Request   
+``GET /``  
+Respond  
 ~~~
-var server = new HttpListener();
-server.Prefixes.Add("http://localhost:8080/");
-server.Start();
-while (true)
+HTTP/1.1 200 OK
+Server: Microsoft-NetCore/2.0
+Date: Tue, 06 Apr 2021 00:05:40 GMT
+Content-Length: 62
+Connection: close
+
+Hello Tiffany - the time on the server is 10:05 on 06 Apr 2021
+~~~
+
+## GET /people
+Get all people in the data   
+Request  
+``GET /people``  
+Respond  
+~~~
+HTTP/1.1 200 OK
+Server: Microsoft-NetCore/2.0
+Date: Tue, 06 Apr 2021 00:09:26 GMT
+Content-Length: 33
+Connection: close
+
+[
+  {
+    "Name": "Tiffany"
+  }
+]
+~~~
+
+## POST /people
+Create a new person in body content    
+Request  
+``POST /people``  
+Raw body content  
+``
 {
-    var context = server.GetContext();  // Gets the request
-    Console.WriteLine($"{context.Request.HttpMethod} {context.Request.Url}");
-    var buffer = System.Text.Encoding.UTF8.GetBytes("Hello");
-    context.Response.ContentLength64 = buffer.Length;
-    context.Response.OutputStream.Write(buffer, 0, buffer.Length);  // forces send of response
+    "Name":"DS"
+}  
+``  
+Respond  
+~~~
+HTTP/1.1 200 OK
+Server: Microsoft-NetCore/2.0
+Date: Tue, 06 Apr 2021 00:17:30 GMT
+Content-Length: 18
+Connection: close
+
+{
+  "Name": "DS"
 }
-server.Stop();  // never reached...
 ~~~
 
-----------------------------------------------------------------------
+## PUT /people/{oldPerson}
+Update a person name     
+Request  
+``PUT /people/DS``  
+New person name in raw body content   
+``
+{
+    "Name":"DSTeoh"
+}
+``
+~~~
+HTTP/1.1 200 OK
+Server: Microsoft-NetCore/2.0
+Date: Tue, 06 Apr 2021 00:20:19 GMT
+Content-Length: 22
+Connection: close
+
+{
+  "Name": "DSTeoh"
+}
+~~~
+
+## DELETE /people/{person}
+Delete a person    
+Request    
+``DELETE /people/Mattias``   
+Respond   
+~~~
+HTTP/1.1 200 OK
+Server: Microsoft-NetCore/2.0
+Date: Tue, 06 Apr 2021 00:21:30 GMT
+Connection: close
+Transfer-Encoding: chunked
+~~~
+
+## Invalid path 
+Request  
+``GET /invalidPath``  
+Respond  
+~~~
+HTTP/1.1 404 Not Found
+Server: Microsoft-NetCore/2.0
+Date: Tue, 06 Apr 2021 00:43:42 GMT
+Connection: close
+Transfer-Encoding: chunked
+~~~  
+
+## Invalid Method on Root
+Request  
+``POST /``  
+Respond  
+~~~
+HTTP/1.1 405 Method Not Allowed
+Server: Microsoft-NetCore/2.0
+Date: Tue, 06 Apr 2021 00:46:18 GMT
+Connection: close
+Transfer-Encoding: chunked
+~~~  
+
+## Invalid Method on /people
+Request  
+``PATCH /people``  
+Respond  
+~~~
+HTTP/1.1 405 Method Not Allowed
+Server: Microsoft-NetCore/2.0
+Date: Tue, 06 Apr 2021 00:48:10 GMT
+Connection: close
+Transfer-Encoding: chunked
+~~~
 
