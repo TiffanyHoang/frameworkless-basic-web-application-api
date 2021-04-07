@@ -24,17 +24,39 @@ namespace WebApplication_Tests
 
 
         [Fact]
-        public void GETRoot_ReturnGreetingMessage()
+        public void GETRoot_ReturnGreetingMessageWithPeopleInTheList()
         {
-            var response = _client.GetAsync("http://localhost:8080/");
+            var values = new Dictionary<string, string>
+                {
+                    { "Name", "DS" },
+                };
+            string json = JsonConvert.SerializeObject(values, Formatting.Indented);
+            var content = new StringContent(json);
+            var response = _client.PostAsync("http://localhost:8080/people", content);
 
             _server.ProcessRequest();
 
             var responseString = response.Result.Content.ReadAsStringAsync().Result;
 
+            response = _client.GetAsync("http://localhost:8080/people");
+
+            _server.ProcessRequest();
+
+            responseString = response.Result.Content.ReadAsStringAsync().Result;
+
+            var expectedString = "[\n  {\n    \"Name\": \"Tiffany\"\n  },\n  {\n    \"Name\": \"DS\"\n  }\n]";
+
+            Assert.Equal(expectedString, responseString);
+        
+            response = _client.GetAsync("http://localhost:8080/");
+
+            _server.ProcessRequest();
+
+            responseString = response.Result.Content.ReadAsStringAsync().Result;
+
             var time = DateTime.Now.ToString("HH:mm");
             var date = DateTime.Now.ToString("dd MMM yyyy");
-            var expectedString = $"Hello Tiffany - the time on the server is {time} on {date}";
+            expectedString = $"Hello Tiffany DS - the time on the server is {time} on {date}";
 
             Assert.Equal(expectedString, responseString);
         }
