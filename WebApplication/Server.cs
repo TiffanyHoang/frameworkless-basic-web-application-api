@@ -13,10 +13,13 @@ namespace WebApplication
         private readonly HttpListener _listener;
         private readonly RouteController _routeController;
 
+        
+
         public Server()
         {
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
             _listener = new HttpListener();
-            _listener.Prefixes.Add($"http://*:8080/");
+            _listener.Prefixes.Add($"http://*:{port}/");
 
             Repository repository = new Repository();
 
@@ -31,7 +34,7 @@ namespace WebApplication
             _routeController = new RouteController(greetingRequestHandler, peopleRequestHandler);
 
             _listener.Start();
-            Console.WriteLine("Server started");
+            Console.WriteLine($"Server started, listening on port {port}");
         }
 
         public void Close()
