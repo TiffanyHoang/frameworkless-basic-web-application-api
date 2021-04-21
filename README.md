@@ -1,4 +1,5 @@
 # Frameworkless Web Application Kata
+[![build status](https://badge.buildkite.com/c68e56a72e0d1c72022f8e8e91d9506935c7d0658b7f62f135.svg?branch=main&theme=00aa65,ce2554,2b74df,8241aa,fff,fff)](https://buildkite.com/myob/tiffany-frameworkless-web-app-api)
 
 A .NET Core solution to [the Frameworkless Basic Web Application kata](https://github.com/MYOB-Technology/General_Developer/blob/main/katas/kata-frameworkless-basic-web-application/kata-frameworkless-basic-web-application.md) with [enhancements](https://github.com/MYOB-Technology/General_Developer/blob/main/katas/kata-frameworkless-basic-web-application/kata-frameworkless-basic-web-application-enhancements.md).
 
