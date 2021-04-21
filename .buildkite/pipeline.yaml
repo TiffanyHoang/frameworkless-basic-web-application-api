@@ -1,7 +1,7 @@
 steps:
   - label: ':checkered_flag: Run Tests'
-    command: 
-      - echo "Run the unit tests"
-      - dotnet test
+    commands: 
+      - "echo 'Run the unit tests'"
+      - "dotnet test"
     agents:
       queue: grace-lab
