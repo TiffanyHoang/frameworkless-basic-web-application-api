@@ -1,3 +1,5 @@
-docker build -t test-run ..
+docker build -f Dockerfile.Test -t test .
 
-docker run -e PORT=123 -p 8080:123 test-run
+docker build -t app ..
+
+docker run -e PORT=123 -p 8080:123 app
