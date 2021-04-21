@@ -5,3 +5,12 @@ steps:
       - "docker build -f Dockerfile.Test -t test ."
     agents:
       queue: grace-lab
+    
+  - wait 
+  
+  - label: ':gear: Build App'
+    commands: 
+      - "echo 'Build app'"
+      - "docker build -f Dockerfile -t build ."
+    agents:
+      queue: grace-lab
