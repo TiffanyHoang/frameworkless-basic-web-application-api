@@ -11,7 +11,7 @@ steps:
   - label: ':gear: Build & push App'
     commands: 
       - "echo 'Build app'"
-      - "docker build -f Dockerfile -t build ."
+      - "docker build -f Dockerfile -t 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/frameworkless-basic-web-app-tiffany ."
       - "aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com"
       - "docker push 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/frameworkless-basic-web-app-tiffany"
     agents:
