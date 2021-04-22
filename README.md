@@ -7,7 +7,7 @@ A .NET Core solution to [the Frameworkless Basic Web Application kata](https://g
 These are the supported endpoints along with example responses. Use your favourite HTTP client, such as Postman or REST client, to make requests!
 
 ## GET / 
-Return greeting message  
+Return greeting message   
 Request   
 ``GET /``  
 Respond  
