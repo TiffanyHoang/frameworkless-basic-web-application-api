@@ -3,6 +3,7 @@ steps:
     commands: 
       - "echo 'Run the unit tests'"
       - "docker build -f Dockerfile.Test -t test ."
+      - "docker rmi test -f"
     agents:
       queue: grace-lab
     
@@ -13,6 +14,7 @@ steps:
       - "echo 'Build app'"
       - "docker build -f Dockerfile -t 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/frameworkless-basic-web-app-tiffany ."
       - "docker push 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/frameworkless-basic-web-app-tiffany"
+      - "docker rmi 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/frameworkless-basic-web-app-tiffany -f"
     plugins:
       - ecr#v2.3.0:
           login: true
@@ -22,7 +24,7 @@ steps:
   - wait 
 
   - label: ':rocket: Deploy'
-    command: "aws ecs --region ap-southeast-2 update-service --cluster tiffany-cluster --service tiffany-service --force-new-deployment"
+    command: "aws ecs update-service --cluster tiffany-cluster --service tiffany-service --force-new-deployment"
     agents:
       queue: grace-lab
 
