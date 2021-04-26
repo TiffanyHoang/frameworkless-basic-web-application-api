@@ -22,7 +22,7 @@ steps:
   - wait 
 
   - label: ':rocket: Deploy'
-    command: "aws ecs update-service --cluster tiffany-cluster --service tiffany-service --force-new-deployment"
+    command: "aws ecs --region ap-southeast-2 update-service --cluster tiffany-cluster --service tiffany-service --force-new-deployment"
     agents:
       queue: grace-lab
 

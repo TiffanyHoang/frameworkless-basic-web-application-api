@@ -7,4 +7,5 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0
 WORKDIR /app
 COPY --from=build /app/out .
 ENV COMPlus_EnableDiagnostics=0
-ENTRYPOINT ["dotnet", "WebApplication.dll"]
+CMD ["WebApplication.dll"]
+ENTRYPOINT ["dotnet"]
