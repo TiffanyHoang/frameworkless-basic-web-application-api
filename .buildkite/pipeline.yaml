@@ -9,12 +9,8 @@ steps:
     
   - wait 
 
-  - label: ':gear: Build & push App'
-    commands: 
-      - "echo 'Build app'"
-      - "docker build -f Dockerfile -t 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/frameworkless-basic-web-app-tiffany ."
-      - "docker push 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/frameworkless-basic-web-app-tiffany"
-      - "docker rmi 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/frameworkless-basic-web-app-tiffany -f"
+  - label: ':gear: Build & push app to ECR'
+    command: "./scripts/ops/build-push.sh"
     plugins:
       - ecr#v2.3.0:
           login: true
@@ -23,8 +19,8 @@ steps:
 
   - wait 
 
-  - label: ':rocket: Deploy'
-    command: "aws ecs update-service --cluster tiffany-cluster --service tiffany-service --force-new-deployment"
+  - label: ':rocket: Deploy to AWS'
+    command: "aws ecs --no-cli-pager update-service --cluster tiffany-cluster --service tiffany-service --force-new-deployment"
     agents:
       queue: grace-lab
 
