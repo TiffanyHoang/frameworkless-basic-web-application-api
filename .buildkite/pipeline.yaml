@@ -16,8 +16,13 @@ steps:
     plugins:
       - ecr#v2.3.0:
           login: true
-          account_ids: "138666658526"
-          region: "ap-southeast-2"
     agents:
       queue: grace-lab
+
+    - wait 
+
+    - label: ':rocket: Deploy'
+      command: "aws ecs update-service --cluster tiffany-cluster --service tiffany-service --force-new-deployment"
+      agents:
+        queue: grace-lab
 
