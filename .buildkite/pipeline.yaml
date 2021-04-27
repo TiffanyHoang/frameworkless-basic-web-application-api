@@ -1,9 +1,6 @@
 steps:
   - label: ':checkered_flag: Run Tests'
-    commands: 
-      - "echo 'Run the unit tests'"
-      - "docker build -f Dockerfile.Test -t test ."
-      - "docker rmi test -f"
+    commands: "./scripts/ops/unit-tests.sh"
     agents:
       queue: grace-lab
     
