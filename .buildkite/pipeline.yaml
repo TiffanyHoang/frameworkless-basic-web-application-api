@@ -19,7 +19,7 @@ steps:
 
   - label: ':rocket: Deploy to AWS'
     branches: "main"
-    command: "aws ecs --no-cli-pager update-service --cluster tiffany-cluster --service tiffany-service --force-new-deployment"
+    command: "./scripts/ops/deploy.sh"
     agents:
       queue: grace-lab
 
