@@ -1,14 +1,14 @@
 steps:
   - label: ':checkered_flag: Run Tests'
-    commands: "./scripts/ops/unit-tests.sh"
+    command: ./scripts/ops/unit-tests.sh
     agents:
       queue: grace-lab
     
   - wait 
 
   - label: ':gear: Build & push app to ECR'
-    branches: "main"
-    command: "./scripts/ops/build-push.sh"
+    branches: main
+    command: ./scripts/ops/build-push.sh
     plugins:
       - ecr#v2.3.0:
           login: true
@@ -19,7 +19,7 @@ steps:
 
   - label: ':rocket: Deploy to AWS'
     branches: "main"
-    command: "./scripts/ops/deploy.sh"
+    command: ./scripts/ops/deploy.sh
     agents:
       queue: grace-lab
 
