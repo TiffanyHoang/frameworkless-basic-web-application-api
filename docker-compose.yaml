@@ -4,11 +4,10 @@ services:
         build:
             context: .
             target: run
-        image: tiffany-app
+        image: 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/frameworkless-basic-web-app-tiffany
         ports: 
             - 8080:8080
     test:
         build:
             context: .
             target: test
-        image: tiffany-test
