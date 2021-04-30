@@ -1,5 +1,5 @@
 steps:
-  - label: ':checkered_flag: Run Tests'
+  - label: ':checkered_flag: Run Unit Tests'
     command: ./scripts/ops/unit-tests.sh
     agents:
       queue: grace-lab
@@ -18,7 +18,7 @@ steps:
   - wait 
 
   - label: ':rocket: Deploy to AWS'
-    branches: "main"
+    branches: main
     command: ./scripts/ops/deploy.sh
     agents:
       queue: grace-lab
