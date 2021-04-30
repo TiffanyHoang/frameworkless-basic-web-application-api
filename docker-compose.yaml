@@ -3,11 +3,7 @@ services:
     app:
         build:
             context: .
-            target: run
+            dockerfile: Dockerfile
         image: 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/frameworkless-basic-web-app-tiffany
         ports: 
             - 8080:8080
-    test:
-        build:
-            context: .
-            target: test
