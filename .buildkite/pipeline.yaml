@@ -6,9 +6,9 @@ steps:
     
   - wait 
 
-  - label: ':gear: Build & push app to ECR'
+  - label: ':gear: Build & prepare repo & push app to ECR'
     branches: main
-    command: ./ops/bin/build-push.sh
+    command: ./ops/bin/build-push-to-ecr.sh
     plugins:
       - ecr#v2.3.0:
           login: true
