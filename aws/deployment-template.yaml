@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  ALBSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Allow all myob melb and syd ip to access Application Load Balancer
+      GroupName: tiffany-api-sg-lb
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 203.34.100.0/24
+          Description: Melbourne DC
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 49.255.41.116/30
+          Description: Sydney Kent Street
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 124.254.104.108/30
+          Description: Melbourne Cremorne
+  ApplicationSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Allow load balancer to access application
+      GroupName: tiffany-api-sg
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          SourceSecurityGroupName: tiffany-api-sg-lb
+          Description: tiffany-api-sg-lb
+  
