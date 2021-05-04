@@ -21,6 +21,7 @@ Resources:
           ToPort: 443
           CidrIp: 124.254.104.108/30
           Description: Melbourne Cremorne
+      VpcId: vpc-d88094bf
   ApplicationSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -32,6 +33,7 @@ Resources:
           ToPort: 443
           SourceSecurityGroupName: tiffany-api-sg-lb
           Description: tiffany-api-sg-lb
+      VpcId: vpc-d88094bf
   TaskDefinition:
     Type: 'AWS::ECS::TaskDefinition'
     Properties: 
@@ -52,4 +54,21 @@ Resources:
       CapacityProviders: 
         - "FARGATE"
       ClusterName: "tiffany-api-cluster"
-    
+  ECSService:
+    Type: AWS::ECS::Service
+    Properties: 
+      LaunchType: FARGATE
+      Cluster: !Ref ECSCluster
+      DeploymentConfiguration: 
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: 2
+      NetworkConfiguration: 
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: 
+            - !Ref ApplicationSecurityGroup
+          Subnets: 
+            - subnet-0ecc2546
+      ServiceName: tiffany-api-service
+      TaskDefinition: !Ref TaskDefinition 
