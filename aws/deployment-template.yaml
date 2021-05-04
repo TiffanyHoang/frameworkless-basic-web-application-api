@@ -46,4 +46,10 @@ Resources:
         ContainerDefinitions: 
             - Name: "tiff-app-api"
               Image: "138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/tiffany-frameworkless-basic-web-app-api:latest"
-
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties: 
+      CapacityProviders: 
+        - "FARGATE"
+      ClusterName: "tiffany-api-cluster"
+    
