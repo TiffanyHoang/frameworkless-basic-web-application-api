@@ -32,4 +32,18 @@ Resources:
           ToPort: 443
           SourceSecurityGroupName: tiffany-api-sg-lb
           Description: tiffany-api-sg-lb
-  
+  TaskDefinition:
+    Type: 'AWS::ECS::TaskDefinition'
+    Properties: 
+        Family: "tiffany-api-task"
+        TaskRoleArn: "ecsTaskExecutionRole"
+        ExecutionRoleArn: "ecsTaskExecutionRole"
+        NetworkMode: "awsvpc"
+        RequiresCompatibilities: 
+            - "FARGATE"
+        CPU: "256"
+        Memory: "0.5GB"
+        ContainerDefinitions: 
+            - Name: "tiff-app-api"
+              Image: "138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/tiffany-frameworkless-basic-web-app-api:latest"
+
