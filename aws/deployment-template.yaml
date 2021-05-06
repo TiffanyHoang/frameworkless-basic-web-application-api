@@ -34,6 +34,40 @@ Resources:
           SourceSecurityGroupName: tiffany-api-sg-lb
           Description: tiffany-api-sg-lb
       VpcId: vpc-d88094bf
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties: 
+      IpAddressType: ipv4
+      Name: tiffany-api-load-balancer
+      Scheme: internet-facing
+      SecurityGroups: 
+        - !Ref ALBSecurityGroup
+      Subnets: 
+        - subnet-0ecc2546
+        - subnet-316e9257
+      Type: application
+  Listener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties: 
+      Certificates: 
+        - arn:aws:acm:ap-southeast-2:138666658526:certificate/026583fe-93ca-4b50-9735-575fcf92a19d
+      DefaultActions: 
+        - Type: "forward"
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: HTTPS
+      SslPolicy: ELBSecurityPolicy-2016-08
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties: 
+      HealthCheckEnabled: true
+      Name: tiffany-api-target-group
+      TargetType: ip
+      VpcId: vpc-d88094bf
+      Protocol: HTTP
+      Port: 80
+    DependsOn: LoadBalancer
   TaskDefinition:
     Type: 'AWS::ECS::TaskDefinition'
     Properties: 
@@ -48,6 +82,8 @@ Resources:
         ContainerDefinitions: 
             - Name: "tiff-app-api"
               Image: "138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/tiffany-frameworkless-basic-web-app-api:latest"
+              PortMappings: 
+                - ContainerPort: 8080
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties: 
@@ -72,3 +108,10 @@ Resources:
             - subnet-0ecc2546
       ServiceName: tiffany-api-service
       TaskDefinition: !Ref TaskDefinition 
+      LoadBalancers:
+      - TargetGroupArn: !Ref TargetGroup
+        ContainerPort: 8080
+        ContainerName: tiff-app-api
+      Cluster: !Ref ECSCluster
+    DependsOn: Listener
+       
