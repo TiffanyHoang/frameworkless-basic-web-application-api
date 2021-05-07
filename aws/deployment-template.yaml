@@ -29,8 +29,8 @@ Resources:
       GroupName: tiffany-api-sg
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
+          FromPort: 8080
+          ToPort: 8080
           SourceSecurityGroupName: tiffany-api-sg-lb
           Description: tiffany-api-sg-lb
       VpcId: vpc-d88094bf
@@ -50,7 +50,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties: 
       Certificates: 
-        - arn:aws:acm:ap-southeast-2:138666658526:certificate/026583fe-93ca-4b50-9735-575fcf92a19d
+        - CertificateArn: arn:aws:acm:ap-southeast-2:138666658526:certificate/026583fe-93ca-4b50-9735-575fcf92a19d
       DefaultActions: 
         - Type: "forward"
           TargetGroupArn: !Ref TargetGroup
@@ -66,7 +66,7 @@ Resources:
       TargetType: ip
       VpcId: vpc-d88094bf
       Protocol: HTTP
-      Port: 80
+      Port: 8080
     DependsOn: LoadBalancer
   TaskDefinition:
     Type: 'AWS::ECS::TaskDefinition'
