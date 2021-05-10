@@ -7,17 +7,17 @@ Resources:
       GroupName: tiffany-api-sg-lb
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 443
+          FromPort: 80
           ToPort: 443
           CidrIp: 203.34.100.0/24
           Description: Melbourne DC
         - IpProtocol: tcp
-          FromPort: 443
+          FromPort: 80
           ToPort: 443
           CidrIp: 49.255.41.116/30
           Description: Sydney Kent Street
         - IpProtocol: tcp
-          FromPort: 443
+          FromPort: 80
           ToPort: 443
           CidrIp: 124.254.104.108/30
           Description: Melbourne Cremorne
@@ -46,12 +46,27 @@ Resources:
         - subnet-0ecc2546
         - subnet-316e9257
       Type: application
-  Listener:
+  ListenerForHTTP:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties: 
+      DefaultActions: 
+        - Type: "redirect"
+          RedirectConfig: 
+            Protocol: "HTTPS"
+            Port: 443
+            Host: "#{host}"
+            Path: "/#{path}"
+            Query: "#{query}"
+            StatusCode: "HTTP_301"
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+  ListenerForHTTPS:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties: 
       Certificates: 
         - CertificateArn: arn:aws:acm:ap-southeast-2:138666658526:certificate/026583fe-93ca-4b50-9735-575fcf92a19d
-      DefaultActions: 
+      DefaultActions:
         - Type: "forward"
           TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref LoadBalancer
@@ -71,19 +86,19 @@ Resources:
   TaskDefinition:
     Type: 'AWS::ECS::TaskDefinition'
     Properties: 
-        Family: "tiffany-api-task"
-        TaskRoleArn: "ecsTaskExecutionRole"
-        ExecutionRoleArn: "ecsTaskExecutionRole"
-        NetworkMode: "awsvpc"
-        RequiresCompatibilities: 
-            - "FARGATE"
-        CPU: "256"
-        Memory: "0.5GB"
-        ContainerDefinitions: 
-            - Name: "tiff-app-api"
-              Image: "138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/tiffany-frameworkless-basic-web-app-api:latest"
-              PortMappings: 
-                - ContainerPort: 8080
+      Family: "tiffany-api-task"
+      TaskRoleArn: "ecsTaskExecutionRole"
+      ExecutionRoleArn: "ecsTaskExecutionRole"
+      NetworkMode: "awsvpc"
+      RequiresCompatibilities: 
+        - "FARGATE"
+      Cpu: "256"
+      Memory: "0.5GB"
+      ContainerDefinitions: 
+        - Name: "tiff-app-api"
+          Image: "138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/tiffany-frameworkless-basic-web-app-api:latest"
+          PortMappings: 
+            - ContainerPort: 8080
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties: 
@@ -112,6 +127,7 @@ Resources:
       - TargetGroupArn: !Ref TargetGroup
         ContainerPort: 8080
         ContainerName: tiff-app-api
-      Cluster: !Ref ECSCluster
-    DependsOn: Listener
+    DependsOn: 
+    - ListenerForHTTP
+    - ListenerForHTTPS
        
