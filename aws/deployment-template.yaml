@@ -130,4 +130,27 @@ Resources:
     DependsOn: 
     - ListenerForHTTP
     - ListenerForHTTPS
-       
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties: 
+      Name: tiffany.fma.lab.myobdev.com
+  DNSRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !GetAtt HostedZone.Id
+      Comment: Zone apex alias targeted to LoadBalancer.
+      RecordSets:
+      - Name: tiffany.fma.lab.myobdev.com
+        Type: A
+        AliasTarget:
+          HostedZoneId: !GetAtt 'LoadBalancer.CanonicalHostedZoneID'
+          DNSName: !GetAtt 'LoadBalancer.DNSName'
+  CNAMERecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !GetAtt HostedZone.Id
+      Name: _4956d49111f1819354882aa5f1f592fb.tiffany.fma.lab.myobdev.com
+      ResourceRecords:
+      - _eae68a1120e0e48d65223094bd79688e.bbfvkzsszw.acm-validations.aws.
+      Type: CNAME
+      TTL: 300
