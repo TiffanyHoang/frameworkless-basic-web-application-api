@@ -1,4 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  version:
+    Type: String
 Resources:
   ALBSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
@@ -96,7 +99,7 @@ Resources:
       Memory: "0.5GB"
       ContainerDefinitions: 
         - Name: "tiff-app-api"
-          Image: "138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/tiffany-frameworkless-basic-web-app-api:latest"
+          Image: !Sub 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/tiffany-frameworkless-basic-web-app-api:${version}
           PortMappings: 
             - ContainerPort: 8080
   ECSCluster:
