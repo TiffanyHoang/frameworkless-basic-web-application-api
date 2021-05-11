@@ -56,7 +56,7 @@ namespace WebApplication_Tests
 
             var time = DateTime.Now.ToString("HH:mm");
             var date = DateTime.Now.ToString("dd MMM yyyy");
-            expectedString = $"Hello Tiffany DS - the time on the server is {time} on {date}";
+            expectedString = $"Hello Tiffany DS - The time on the server is {time} on {date}";
 
             Assert.Equal(expectedString, responseString);
         }
