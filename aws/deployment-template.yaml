@@ -157,3 +157,6 @@ Resources:
       - _eae68a1120e0e48d65223094bd79688e.bbfvkzsszw.acm-validations.aws.
       Type: CNAME
       TTL: 300
+Outputs:
+  DomainName: 
+    Value: !GetAtt HostedZone.NameServers
