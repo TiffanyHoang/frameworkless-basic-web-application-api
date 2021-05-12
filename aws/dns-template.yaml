@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  NameServerRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: Z03276602ECCECZUV6V61
+      Comment: Add domain name to fma dev 
+      Name: tiffany.fma.lab.myobdev.com
+      Type: NS
+      ResourceRecords: 
+        Fn::ImportValue:
+          !Sub ${tiffany-deployment-stack}-NameServers

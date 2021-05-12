@@ -158,5 +158,11 @@ Resources:
       Type: CNAME
       TTL: 300
 Outputs:
-  DomainName: 
-    Value: !GetAtt HostedZone.NameServers
+  HostedZone:
+    Description: Hosted Zone
+    Value: !Ref HostedZone
+  ZoneServers:
+    Description: Zone Servers
+    Value: !Join [',', !GetAtt HostedZone.NameServers]
+    Export:
+      Name: !Sub "${AWS::StackName}-NameServers"
