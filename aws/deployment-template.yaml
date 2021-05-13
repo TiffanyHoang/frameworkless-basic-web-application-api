@@ -2,6 +2,12 @@ AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   version:
     Type: String
+  vpcId:
+    Type: String
+  subnet1:
+    Type: String
+  subnet2: 
+    Type: String
 Resources:
   ALBSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
@@ -24,7 +30,7 @@ Resources:
           ToPort: 443
           CidrIp: 124.254.104.108/30
           Description: Melbourne Cremorne
-      VpcId: vpc-d88094bf
+      VpcId: !Ref vpcId
   ApplicationSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -36,7 +42,7 @@ Resources:
           ToPort: 8080
           SourceSecurityGroupName: tiffany-api-sg-lb
           Description: tiffany-api-sg-lb
-      VpcId: vpc-d88094bf
+      VpcId: !Ref vpcId
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties: 
@@ -46,8 +52,8 @@ Resources:
       SecurityGroups: 
         - !Ref ALBSecurityGroup
       Subnets: 
-        - subnet-0ecc2546
-        - subnet-316e9257
+        - subnet1
+        - subnet2
       Type: application
   ListenerForHTTP:
     Type: AWS::ElasticLoadBalancingV2::Listener
@@ -82,7 +88,7 @@ Resources:
       HealthCheckEnabled: true
       Name: tiffany-api-target-group
       TargetType: ip
-      VpcId: vpc-d88094bf
+      VpcId: !Ref vpcId
       Protocol: HTTP
       Port: 8080
     DependsOn: LoadBalancer
@@ -123,7 +129,7 @@ Resources:
           SecurityGroups: 
             - !Ref ApplicationSecurityGroup
           Subnets: 
-            - subnet-0ecc2546
+            - subnet1
       ServiceName: tiffany-api-service
       TaskDefinition: !Ref TaskDefinition 
       LoadBalancers:
