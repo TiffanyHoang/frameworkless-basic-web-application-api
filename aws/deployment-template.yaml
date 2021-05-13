@@ -8,6 +8,16 @@ Parameters:
     Type: String
   subnet2: 
     Type: String
+  certificate:
+    Type: String
+  domainName:
+    Type: String
+  CNAMERecordName:
+    Type: String
+  CNAMERecordValue:
+    Type: String
+  ECRAccount:
+    Type: String
 Resources:
   ALBSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
@@ -74,7 +84,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties: 
       Certificates: 
-        - CertificateArn: arn:aws:acm:ap-southeast-2:138666658526:certificate/026583fe-93ca-4b50-9735-575fcf92a19d
+        - CertificateArn: !Ref certificate
       DefaultActions:
         - Type: "forward"
           TargetGroupArn: !Ref TargetGroup
@@ -105,7 +115,7 @@ Resources:
       Memory: "0.5GB"
       ContainerDefinitions: 
         - Name: "tiff-app-api"
-          Image: !Sub 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/tiffany-frameworkless-basic-web-app-api:${version}
+          Image: !Sub ${ECRAccount}/tiffany-frameworkless-basic-web-app-api:${version}
           PortMappings: 
             - ContainerPort: 8080
   ECSCluster:
@@ -142,14 +152,14 @@ Resources:
   HostedZone:
     Type: AWS::Route53::HostedZone
     Properties: 
-      Name: tiffany.fma.lab.myobdev.com
+      Name: !Ref domainName
   DNSRecord:
     Type: AWS::Route53::RecordSetGroup
     Properties:
       HostedZoneId: !GetAtt HostedZone.Id
       Comment: Zone apex alias targeted to LoadBalancer.
       RecordSets:
-      - Name: tiffany.fma.lab.myobdev.com
+      - Name: !Ref domainName
         Type: A
         AliasTarget:
           HostedZoneId: !GetAtt 'LoadBalancer.CanonicalHostedZoneID'
@@ -158,9 +168,9 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: !GetAtt HostedZone.Id
-      Name: _4956d49111f1819354882aa5f1f592fb.tiffany.fma.lab.myobdev.com
+      Name: !Ref CNAMERecordName
       ResourceRecords:
-      - _eae68a1120e0e48d65223094bd79688e.bbfvkzsszw.acm-validations.aws.
+      - !Ref CNAMERecordValue
       Type: CNAME
       TTL: 300
 Outputs:
