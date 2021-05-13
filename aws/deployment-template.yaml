@@ -52,8 +52,8 @@ Resources:
       SecurityGroups: 
         - !Ref ALBSecurityGroup
       Subnets: 
-        - subnet1
-        - subnet2
+        - !Ref subnet1
+        - !Ref subnet2
       Type: application
   ListenerForHTTP:
     Type: AWS::ElasticLoadBalancingV2::Listener
@@ -129,7 +129,7 @@ Resources:
           SecurityGroups: 
             - !Ref ApplicationSecurityGroup
           Subnets: 
-            - subnet1
+            - !Ref subnet1
       ServiceName: tiffany-api-service
       TaskDefinition: !Ref TaskDefinition 
       LoadBalancers:
