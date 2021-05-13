@@ -6,9 +6,9 @@ steps:
     
   - wait 
 
-  - label: ':gear: Prepare repo , build & push app to ECR'
+  - label: ':gear: Prepare repo , build & push app to ECR in DEV'
     branches: main
-    command: ./ops/bin/build-push-to-ecr.sh
+    command: ./ops/bin/build-push-to-ecr-dev.sh
     plugins:
       - ecr#v2.3.0:
           login: true
@@ -19,7 +19,6 @@ steps:
 
   - label: ':rocket: Deploy to AWS'
     branches: main
-    command: ./ops/bin/deploy.sh
+    command: ./ops/bin/deploy-dev.sh
     agents:
       queue: grace-lab
-
