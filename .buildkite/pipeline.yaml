@@ -30,13 +30,3 @@ steps:
     agents:
       queue: grace-lab
   
-  - wait
-
-  - label: ':gear: Prepare repo , build & push app to ECR in PROD'
-    branches: main
-    command: ./ops/bin/build-push-to-ecr-prod.sh
-    plugins:
-      - ecr#v2.3.0:
-          login: true
-    agents:
-      queue: fma-dev
