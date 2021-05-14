@@ -5,6 +5,12 @@ steps:
       queue: grace-lab
     
   - wait 
+    - label: ":shipit: Sonar scan"
+    command: "./.sonarqube/scan.sh"
+    agents:
+        queue: grace-lab
+
+  - wait
 
   - label: ':gear: Prepare repo , build & push app to ECR in DEV'
     branches: main
@@ -22,3 +28,14 @@ steps:
     command: ./ops/bin/deploy-dev.sh
     agents:
       queue: grace-lab
+  
+  - wait
+
+  - label: ':gear: Prepare repo , build & push app to ECR in PROD'
+    branches: main
+    command: ./ops/bin/build-push-to-ecr-prod.sh
+    plugins:
+      - ecr#v2.3.0:
+          login: true
+    agents:
+      queue: fma-dev
