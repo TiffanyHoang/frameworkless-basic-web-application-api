@@ -5,3 +5,14 @@ Resources:
     Type: AWS::ECR::Repository
     Properties:
       RepositoryName: tiffany-frameworkless-basic-web-app-api
+      RepositoryPolicyText: 
+        Statement: 
+          - Sid: allow-ecr-read-access
+            Effect: Allow
+            Principal:
+              AWS:
+                - arn:aws:iam::274387265859:root # fma-dev
+            Action:
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchGetImage
+              - ecr:BatchCheckLayerAvailability
