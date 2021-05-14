@@ -5,7 +5,8 @@ steps:
       queue: grace-lab
     
   - wait 
-    - label: ":shipit: Sonar scan"
+
+  - label: ":shipit: Sonar scan"
     command: "./.sonarqube/scan.sh"
     agents:
         queue: grace-lab
