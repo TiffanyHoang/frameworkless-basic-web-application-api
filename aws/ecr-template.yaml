@@ -7,7 +7,7 @@ Resources:
       RepositoryName: tiffany-frameworkless-basic-web-app-api
       RepositoryPolicyText: 
         Statement: 
-          - Sid: allow-ecr-read-access
+          - Sid: set-read-access
             Effect: Allow
             Principal:
               AWS:

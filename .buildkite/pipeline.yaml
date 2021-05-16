@@ -24,9 +24,17 @@ steps:
 
   - wait 
 
-  - label: ':rocket: Deploy to AWS'
+  - label: ':rocket: Deploy to AWS DEV'
     branches: main
     command: ./ops/bin/deploy-dev.sh
     agents:
       queue: grace-lab
+  
+  - wait 
+
+  - label: ':rocket: Deploy to AWS PROD'
+    branches: main
+    command: ./ops/bin/deploy-prod.sh
+    agents:
+      queue: fma-dev
   

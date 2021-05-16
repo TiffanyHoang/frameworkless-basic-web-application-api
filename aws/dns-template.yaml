@@ -4,8 +4,8 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: Z03276602ECCECZUV6V61
-      Comment: Add domain name to fma dev 
-      Name: tiffany.fma.lab.myobdev.com
+      Comment: Add NS record
+      Name: tiffany-prod.fma.lab.myobdev.com
       Type: NS
       ResourceRecords: 
         Fn::ImportValue:
