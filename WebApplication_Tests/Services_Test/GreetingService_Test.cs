@@ -22,8 +22,8 @@ namespace WebApplication_Tests
         public void Greeting_ReturnGreetingMessageString()
         {
             var actual = _greetingService.Greeting();
-            var time = DateTime.Now.ToString("HH:mm");
-            var date = DateTime.Now.ToString("dd MMM yyyy");
+            var time = DateTime.Now.ToUniversalTime().ToString("HH:mm");
+            var date = DateTime.Now.ToUniversalTime().ToString("dd MMM yyyy");
             var expected = $"Hello Tiffany - The time on the server is {time} on {date}";
             Assert.Equal(expected, actual);
         }

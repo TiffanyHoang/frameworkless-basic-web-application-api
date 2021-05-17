@@ -30,11 +30,11 @@ steps:
     agents:
       queue: grace-lab
   
-  - wait 
+  # - wait 
 
-  - label: ':rocket: Deploy to AWS PROD'
-    branches: main
-    command: ./ops/bin/deploy-prod.sh
-    agents:
-      queue: fma-dev
+  # - label: ':rocket: Deploy to AWS PROD'
+  #   branches: main
+  #   command: ./ops/bin/deploy-prod.sh
+  #   agents:
+  #     queue: fma-dev
   

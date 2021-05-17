@@ -11,7 +11,7 @@ namespace WebApplication_Tests
         {
             DateTimeManager dateTimeManager = new DateTimeManager();
             var actualFormat = dateTimeManager.GetCurrentTime();
-            var expectedFormat = DateTime.Now.ToString("HH:mm");
+            var expectedFormat = DateTime.Now.ToUniversalTime().ToString("HH:mm");
             Assert.Equal(expectedFormat, actualFormat);
         }
 
@@ -20,7 +20,7 @@ namespace WebApplication_Tests
         {
             DateTimeManager dateTimeManager = new DateTimeManager();
             var actualFormat = dateTimeManager.GetCurrentDate();
-            var expectedFormat = DateTime.Now.ToString("dd MMM yyyy");
+            var expectedFormat = DateTime.Now.ToUniversalTime().ToString("dd MMM yyyy");
             Assert.Equal(expectedFormat, actualFormat);
         }
     }

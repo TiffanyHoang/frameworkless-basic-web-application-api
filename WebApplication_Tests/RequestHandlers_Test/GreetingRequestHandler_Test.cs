@@ -31,8 +31,8 @@ namespace WebApplication_Tests
 
             _greetingRequestHandler.HandleRequest(context);
 
-            var time = DateTime.Now.ToString("HH:mm");
-            var date = DateTime.Now.ToString("dd MMM yyyy");
+            var time = DateTime.Now.ToUniversalTime().ToString("HH:mm");
+            var date = DateTime.Now.ToUniversalTime().ToString("dd MMM yyyy");
             var expectedResponse = $"Hello Tiffany - The time on the server is {time} on {date}";
 
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);

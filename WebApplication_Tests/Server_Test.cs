@@ -54,8 +54,8 @@ namespace WebApplication_Tests
 
             responseString = response.Result.Content.ReadAsStringAsync().Result;
 
-            var time = DateTime.Now.ToString("HH:mm");
-            var date = DateTime.Now.ToString("dd MMM yyyy");
+            var time = DateTime.Now.ToUniversalTime().ToString("HH:mm");
+            var date = DateTime.Now.ToUniversalTime().ToString("dd MMM yyyy");
             expectedString = $"Hello Tiffany DS - The time on the server is {time} on {date}";
 
             Assert.Equal(expectedString, responseString);
