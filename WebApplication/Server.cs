@@ -12,9 +12,7 @@ namespace WebApplication
     {
         private readonly HttpListener _listener;
         private readonly RouteController _routeController;
-
         
-
         public Server()
         {
             var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";

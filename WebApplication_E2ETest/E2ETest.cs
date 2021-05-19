@@ -21,8 +21,8 @@ namespace WebApplication_E2ETest
 
             var responseString = response.Result.Content.ReadAsStringAsync().Result;
 
-            var time = DateTime.Now.ToString("HH:mm");
-            var date = DateTime.Now.ToString("dd MMM yyyy");
+            var time = DateTime.Now.ToUniversalTime().ToString("HH:mm");
+            var date = DateTime.Now.ToUniversalTime().ToString("dd MMM yyyy");
             var expectedString = $"Hello Tiffany - The time on the server is {time} on {date}";
 
             Assert.Equal(expectedString, responseString);
