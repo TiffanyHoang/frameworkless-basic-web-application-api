@@ -162,4 +162,9 @@ Outputs:
     Description: Load Balancer DNS
     Value: !GetAtt LoadBalancer.DNSName
     Export: 
-      Name: !Sub "${AWS::StackName}-LoadBalancerDNS"
+      Name: !Sub "${AWS::StackName}LoadBalancerDNS"
+  LoadBalancerCanonicalHostedZoneID:
+    Description: Load Balancer DNS Canonical Hosted Zone ID
+    Value: !GetAtt LoadBalancer.CanonicalHostedZoneID
+    Export: 
+      Name: !Sub "${AWS::StackName}LoadBalancerCanonicalHostedZoneID"

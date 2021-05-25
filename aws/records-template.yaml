@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  domainName:
+    Type: String 
+  hostedZoneId:
+    Type: String
+  CNAMERecordName:
+    Type: String
+  CNAMERecordValue:
+    Type: String
+Resources:
+  RouteTrafficRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref hostedZoneId
+      Comment: Add A record to load balancer
+      RecordSets:
+      - Name: !Ref domainName
+        Type: A
+        AliasTarget:
+          HostedZoneId: !ImportValue 'TiffanyDeploymentStackProdLoadBalancerCanonicalHostedZoneID'
+          DNSName: !ImportValue 'TiffanyDeploymentStackProdLoadBalancerDNS'
+  CNAMERecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref hostedZoneId
+      Name: !Ref CNAMERecordName
+      ResourceRecords:
+      - !Ref CNAMERecordValue
+      Type: CNAME
+      TTL: 300
