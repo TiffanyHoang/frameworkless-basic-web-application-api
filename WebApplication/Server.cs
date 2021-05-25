@@ -12,10 +12,9 @@ namespace WebApplication
     {
         private readonly HttpListener _listener;
         private readonly RouteController _routeController;
-        
+        private string port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
         public Server()
         {
-            var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
             _listener = new HttpListener();
             _listener.Prefixes.Add($"http://*:{port}/");
 
@@ -30,11 +29,20 @@ namespace WebApplication
             IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(peopleService);
 
             _routeController = new RouteController(greetingRequestHandler, peopleRequestHandler);
-
-            _listener.Start();
-            Console.WriteLine($"Server started, listening on port {port}");
         }
 
+        public async Task Start()
+        {
+            _listener.Start();
+            Console.WriteLine($"Server started, listening on port {port}");
+            while (true)
+            {
+                var listenerContext = await _listener.GetContextAsync();
+                var context = new Context(listenerContext);
+                _routeController.RequestRouter(context);
+                context.Close();
+            }          
+        }
         public void Close()
         {
             _listener.Close();

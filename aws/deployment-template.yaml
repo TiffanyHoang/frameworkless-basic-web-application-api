@@ -2,6 +2,8 @@ AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   version:
     Type: String
+  imageVersion:
+    Type: String
   vpcId:
     Type: String
   subnet1:
@@ -10,20 +12,12 @@ Parameters:
     Type: String
   certificate:
     Type: String
-  domainName:
-    Type: String
-  CNAMERecordName:
-    Type: String
-  CNAMERecordValue:
-    Type: String
-  ECRAccount:
-    Type: String
 Resources:
   ALBSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
-      GroupDescription: Allow all myob melb and syd ip to access Application Load Balancer
-      GroupName: tiffany-api-sg-lb
+      GroupDescription: Allow all myob melb and syd ip, bk grace and fma-dev agents to access Application Load Balancer
+      GroupName: !Sub tiffany-api-sg-lb-${version}
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
@@ -40,24 +34,44 @@ Resources:
           ToPort: 443
           CidrIp: 124.254.104.108/30
           Description: Melbourne Cremorne
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 443
+          CidrIp: 54.252.144.93/32
+          Description: ops-bk-grace-lab
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 443
+          CidrIp: 54.252.51.13/32
+          Description: ops-bk-grace-lab
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 443
+          CidrIp: 13.210.196.83/32
+          Description: ops-bk-fma-dev
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 443
+          CidrIp: 3.105.52.160/32
+          Description: ops-bk-fma-dev 
       VpcId: !Ref vpcId
   ApplicationSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: Allow load balancer to access application
-      GroupName: tiffany-api-sg
+      GroupName: !Sub tiffany-api-sg-${version}
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 8080
           ToPort: 8080
-          SourceSecurityGroupName: tiffany-api-sg-lb
-          Description: tiffany-api-sg-lb
+          SourceSecurityGroupName: !Sub tiffany-api-sg-lb-${version}
+          Description: !Sub tiffany-api-sg-lb-${version}
       VpcId: !Ref vpcId
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties: 
       IpAddressType: ipv4
-      Name: tiffany-api-load-balancer
+      Name: !Sub tiffany-api-lb-${version}
       Scheme: internet-facing
       SecurityGroups: 
         - !Ref ALBSecurityGroup
@@ -69,14 +83,8 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties: 
       DefaultActions: 
-        - Type: "redirect"
-          RedirectConfig: 
-            Protocol: "HTTPS"
-            Port: 443
-            Host: "#{host}"
-            Path: "/#{path}"
-            Query: "#{query}"
-            StatusCode: "HTTP_301"
+        - Type: "forward"
+          TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref LoadBalancer
       Port: 80
       Protocol: HTTP
@@ -96,7 +104,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties: 
       HealthCheckEnabled: true
-      Name: tiffany-api-target-group
+      Name: !Sub tiffany-api-target-group-${version}
       TargetType: ip
       VpcId: !Ref vpcId
       Protocol: HTTP
@@ -105,25 +113,25 @@ Resources:
   TaskDefinition:
     Type: 'AWS::ECS::TaskDefinition'
     Properties: 
-      Family: "tiffany-api-task"
-      TaskRoleArn: "ecsTaskExecutionRole"
-      ExecutionRoleArn: "ecsTaskExecutionRole"
-      NetworkMode: "awsvpc"
+      Family: !Sub tiffany-api-task-${version}
+      TaskRoleArn: ecsTaskExecutionRole
+      ExecutionRoleArn: ecsTaskExecutionRole
+      NetworkMode: awsvpc
       RequiresCompatibilities: 
-        - "FARGATE"
-      Cpu: "256"
-      Memory: "0.5GB"
+        - FARGATE
+      Cpu: 256
+      Memory: 0.5GB
       ContainerDefinitions: 
-        - Name: "tiff-app-api"
-          Image: !Sub ${ECRAccount}/tiffany-frameworkless-basic-web-app-api:${version}
+        - Name: !Sub tiff-app-api-${version}
+          Image: !Sub 138666658526.dkr.ecr.ap-southeast-2.amazonaws.com/tiffany-frameworkless-basic-web-app-api:${imageVersion}
           PortMappings: 
             - ContainerPort: 8080
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties: 
       CapacityProviders: 
-        - "FARGATE"
-      ClusterName: "tiffany-api-cluster"
+        - FARGATE
+      ClusterName: !Sub tiffany-api-cluster-${version}
   ECSService:
     Type: AWS::ECS::Service
     Properties: 
@@ -140,45 +148,18 @@ Resources:
             - !Ref ApplicationSecurityGroup
           Subnets: 
             - !Ref subnet1
-      ServiceName: tiffany-api-service
+      ServiceName: !Sub tiffany-api-service-${version}
       TaskDefinition: !Ref TaskDefinition 
       LoadBalancers:
       - TargetGroupArn: !Ref TargetGroup
         ContainerPort: 8080
-        ContainerName: tiff-app-api
+        ContainerName: !Sub tiff-app-api-${version}
     DependsOn: 
     - ListenerForHTTP
     - ListenerForHTTPS
-  HostedZone:
-    Type: AWS::Route53::HostedZone
-    Properties: 
-      Name: !Ref domainName
-  DNSRecord:
-    Type: AWS::Route53::RecordSetGroup
-    Properties:
-      HostedZoneId: !GetAtt HostedZone.Id
-      Comment: Zone apex alias targeted to LoadBalancer.
-      RecordSets:
-      - Name: !Ref domainName
-        Type: A
-        AliasTarget:
-          HostedZoneId: !GetAtt 'LoadBalancer.CanonicalHostedZoneID'
-          DNSName: !GetAtt 'LoadBalancer.DNSName'
-  CNAMERecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !GetAtt HostedZone.Id
-      Name: !Ref CNAMERecordName
-      ResourceRecords:
-      - !Ref CNAMERecordValue
-      Type: CNAME
-      TTL: 300
 Outputs:
-  HostedZone:
-    Description: Hosted Zone
-    Value: !Ref HostedZone
-  ZoneServers:
-    Description: Zone Servers
-    Value: !Join [',', !GetAtt HostedZone.NameServers]
-    Export:
-      Name: !Sub "${AWS::StackName}-NameServers"
+  LoadBalancerDNS:
+    Description: Load Balancer DNS
+    Value: !GetAtt LoadBalancer.DNSName
+    Export: 
+      Name: !Sub "${AWS::StackName}-LoadBalancerDNS"

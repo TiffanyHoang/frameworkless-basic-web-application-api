@@ -1,13 +1,13 @@
-﻿namespace WebApplication
+﻿using System.Threading.Tasks;
+
+namespace WebApplication
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Server server = new Server();
-            while (true) {
-                server.ProcessRequest();
-            }
+            await server.Start();
         }
     }
 }

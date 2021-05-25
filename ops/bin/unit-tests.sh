@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-echo '--- :docker: Build unit tests image'
+set -eou pipefail
+echo '--- :docker: Build test image'
 docker build -f Dockerfile.test -t test .
-echo '--- :docker: Remove unit tests image'
-docker rmi test -f
+echo '--- :docker: Run unit test'
+docker run test
+echo '--- :docker: Remove test image'
+docker rmi test -f 

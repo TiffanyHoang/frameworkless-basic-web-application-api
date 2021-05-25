@@ -1,12 +1,17 @@
 AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  NSRecord:
+    Type: String
+  domainName:
+    Type: String 
 Resources:
   NameServerRecord:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: Z03276602ECCECZUV6V61
       Comment: Add NS record
-      Name: tiffany-prod.fma.lab.myobdev.com
+      Name: !Ref domainName
       Type: NS
       ResourceRecords: 
-        Fn::ImportValue:
-          !Sub ${tiffany-deployment-stack}-NameServers
+        - !Ref NSRecord
+      TTL: 300
