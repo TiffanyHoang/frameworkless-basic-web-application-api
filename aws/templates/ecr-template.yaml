@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Repository for web application api image
+Resources:
+  Repository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: tiffany-frameworkless-basic-web-app-api
+      LifecyclePolicy: 
+        LifecyclePolicyText: |
+          {
+            "rules": [
+            {
+              "rulePriority": 1,
+              "description": "Only keep 5 images",
+              "selection": {
+                "tagStatus": "any",
+                "countType": "imageCountMoreThan",
+                "countNumber": 5
+              },
+              "action": { "type": "expire" }
+            }]
+          }
+        RegistryId: 138666658526
+      RepositoryPolicyText: 
+        Statement: 
+          - Sid: set-read-access
+            Effect: Allow
+            Principal:
+              AWS:
+                - arn:aws:iam::274387265859:root # fma-dev
+            Action:
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchGetImage
+              - ecr:BatchCheckLayerAvailability
