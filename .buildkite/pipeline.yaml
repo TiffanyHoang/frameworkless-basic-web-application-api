@@ -60,6 +60,7 @@ steps:
     command: 
       - ./ops/bin/deploy.sh prod 
       - ./ops/bin/dns-setup.sh
+      - ./ops/bin/buildkite-annotation.sh
     agents:
       queue: fma-dev
   
