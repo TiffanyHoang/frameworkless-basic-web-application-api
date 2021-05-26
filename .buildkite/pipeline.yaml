@@ -1,15 +1,15 @@
 steps:
-  # - label: ':checkered_flag: Run Unit Tests'
-  #   command: ./ops/bin/unit-tests.sh
-  #   agents:
-  #     queue: grace-lab
+  - label: ':checkered_flag: Run Unit Tests'
+    command: ./ops/bin/unit-tests.sh
+    agents:
+      queue: grace-lab
     
-  # - label: ":shipit: Sonar scan"
-  #   command: "./.sonarqube/scan.sh"
-  #   agents:
-  #       queue: grace-lab
+  - label: ":shipit: Sonar scan"
+    command: "./.sonarqube/scan.sh"
+    agents:
+        queue: grace-lab
 
-  # - wait
+  - wait
 
   - label: ':gear: Prepare repo in ECR DEV'
     command: ./ops/bin/prepare-ecr-repo.sh
@@ -56,7 +56,7 @@ steps:
   - wait 
 
   - label: ':rocket: Deploy to AWS PROD'
-    # branches: main
+    branches: main
     command: 
       - ./ops/bin/deploy.sh prod 
       - ./ops/bin/dns-setup.sh
