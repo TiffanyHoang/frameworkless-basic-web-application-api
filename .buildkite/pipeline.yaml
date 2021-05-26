@@ -1,54 +1,54 @@
 steps:
-  # - label: ':checkered_flag: Run Unit Tests'
-  #   command: ./ops/bin/unit-tests.sh
-  #   agents:
-  #     queue: grace-lab
+  - label: ':checkered_flag: Run Unit Tests'
+    command: ./ops/bin/unit-tests.sh
+    agents:
+      queue: grace-lab
     
-  # - wait 
+  - wait 
 
-  # - label: ":shipit: Sonar scan"
-  #   command: "./.sonarqube/scan.sh"
-  #   agents:
-  #       queue: grace-lab
+  - label: ":shipit: Sonar scan"
+    command: "./.sonarqube/scan.sh"
+    agents:
+        queue: grace-lab
 
-  # - wait
+  - wait
 
-  # - label: ':gear: Prepare repo , build & push app to ECR in DEV'
-  #   command: ./ops/bin/build-push-to-ecr-dev.sh
-  #   plugins:
-  #     - ecr#v2.3.0:
-  #         login: true
-  #   agents:
-  #     queue: grace-lab
+  - label: ':gear: Prepare repo , build & push app to ECR in DEV'
+    command: ./ops/bin/build-push-to-ecr-dev.sh
+    plugins:
+      - ecr#v2.3.0:
+          login: true
+    agents:
+      queue: grace-lab
 
-  # - wait 
+  - wait 
 
-  # - label: ':rocket: Deploy to AWS DEV'
-  #   command: ./ops/bin/deploy-dev.sh
-  #   agents:
-  #     queue: grace-lab
+  - label: ':rocket: Deploy to AWS DEV'
+    command: ./ops/bin/deploy-dev.sh
+    agents:
+      queue: grace-lab
 
-  # - wait 
+  - wait 
   
-  # - label: ':crossed_fingers: End to End Tests'
-  #   key: end-to-end-test
-  #   command: ./ops/bin/e2e-tests.sh
-  #   agents:
-  #     queue: grace-lab
+  - label: ':crossed_fingers: End to End Tests'
+    key: end-to-end-test
+    command: ./ops/bin/e2e-tests.sh
+    agents:
+      queue: grace-lab
   
-  # - wait 
+  - wait 
   
-  # - label: ':hand: Delete test stacks in DEV'
-  #   command: ./ops/bin/delete-stack-dev.sh
-  #   depends_on: end-to-end-test
-  #   allow_dependency_failure: true
-  #   agents:
-  #     queue: grace-lab
+  - label: ':hand: Delete test stacks in DEV'
+    command: ./ops/bin/delete-stack-dev.sh
+    depends_on: end-to-end-test
+    allow_dependency_failure: true
+    agents:
+      queue: grace-lab
       
-  # - wait 
+  - wait 
 
   - label: ':rocket: Deploy to AWS PROD'
-    # branches: main
+    branches: main
     command: 
       - ./ops/bin/deploy-prod.sh
       - ./ops/bin/dns-setup.sh
