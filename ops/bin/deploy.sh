@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -eou pipefail
+set -o xtrace
 echo '--- :aws: Deploy on AWS'
 ENV=$1
 STACKNAME=TiffanyDeploymentStack

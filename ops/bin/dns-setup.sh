@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -eou pipefail
+set -o xtrace
 echo '--- :aws: Deploy on AWS'
 HOSTEDZONEID='Z03276602ECCECZUV6V61'
 DOMAINNAME='tiffany-prod.fma.lab.myobdev.com'

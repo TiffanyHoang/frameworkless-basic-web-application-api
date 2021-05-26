@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -o xtrace
 set -eou pipefail
 echo '--- :docker: Build test image'
 docker build -f Dockerfile.test -t test .
