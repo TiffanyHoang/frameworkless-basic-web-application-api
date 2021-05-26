@@ -18,8 +18,8 @@ Resources:
       - Name: !Ref domainName
         Type: A
         AliasTarget:
-          HostedZoneId: !ImportValue 'TiffanyDeploymentStackProdLoadBalancerCanonicalHostedZoneID'
-          DNSName: !ImportValue 'TiffanyDeploymentStackProdLoadBalancerDNS'
+          HostedZoneId: !ImportValue 'TiffanyDeploymentStackprodLoadBalancerCanonicalHostedZoneID'
+          DNSName: !ImportValue 'TiffanyDeploymentStackprodLoadBalancerDNS'
   CNAMERecord:
     Type: AWS::Route53::RecordSet
     Properties:
