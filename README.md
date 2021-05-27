@@ -4,7 +4,7 @@
 A .NET Core solution to [the Frameworkless Basic Web Application kata](https://github.com/MYOB-Technology/General_Developer/blob/main/katas/kata-frameworkless-basic-web-application/kata-frameworkless-basic-web-application.md) with [enhancements](https://github.com/MYOB-Technology/General_Developer/blob/main/katas/kata-frameworkless-basic-web-application/kata-frameworkless-basic-web-application-enhancements.md).
 
 ## Endpoints
-[tiffany.fma.lab.myobdev.com](tiffany.fma.lab.myobdev.com)
+[https://tiffany-prod.fma.lab.myobdev.com](https://tiffany-prod.fma.lab.myobdev.com)   
 These are the supported endpoints along with example responses. Use your favourite HTTP client, such as Postman or REST client, to make requests!
 
 ## GET / 
