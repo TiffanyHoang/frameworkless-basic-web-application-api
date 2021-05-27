@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 url='tiffany-prod.fma.lab.myobdev.com'
-buildkite-agent annotate "$url 🚀" --style 'success' --context 'ctx-success'
+buildkite-agent annotate "<a href='https://tiffany-prod.fma.lab.myobdev.com'>$url</a> 🚀" --style 'success' --context 'ctx-success'
