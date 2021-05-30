@@ -20,15 +20,4 @@ Resources:
               "action": { "type": "expire" }
             }]
           }
-        RegistryId: 138666658526
-      RepositoryPolicyText: 
-        Statement: 
-          - Sid: set-read-access
-            Effect: Allow
-            Principal:
-              AWS:
-                - arn:aws:iam::274387265859:root # fma-dev
-            Action:
-              - ecr:GetDownloadUrlForLayer
-              - ecr:BatchGetImage
-              - ecr:BatchCheckLayerAvailability
+        RegistryId: 274387265859

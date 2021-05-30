@@ -17,7 +17,7 @@ steps:
       - ecr#v2.3.0:
           login: true
     agents:
-      queue: grace-lab
+      queue: fma-dev
 
   - wait 
 
@@ -27,14 +27,15 @@ steps:
       - ecr#v2.3.0:
           login: true
     agents:
-      queue: grace-lab
+      queue: fma-dev
 
   - wait 
 
   - label: ':rocket: Deploy to AWS DEV'
-    command: ./ops/bin/deploy.sh dev
+    command: 
+      - ./ops/bin/deploy.sh dev
     agents:
-      queue: grace-lab
+      queue: fma-dev
 
   - wait 
   
@@ -42,16 +43,17 @@ steps:
     key: end-to-end-test
     command: ./ops/bin/e2e-tests.sh
     agents:
-      queue: grace-lab
+      queue: fma-dev
   
   - wait 
   
-  - label: ':hand: Delete test stacks in DEV'
-    command: ./ops/bin/delete-stack-dev.sh 
+  - label: ':hand: Delete test deployment stack in DEV'
+    command: 
+      - ./ops/bin/delete-deployment-stack-dev.sh
     depends_on: end-to-end-test
     allow_dependency_failure: true
     agents:
-      queue: grace-lab
+      queue: fma-dev
       
   - wait 
 
@@ -59,7 +61,6 @@ steps:
     branches: main
     command: 
       - ./ops/bin/deploy.sh prod 
-      - ./ops/bin/dns-setup.sh
       - ./ops/bin/buildkite-annotation.sh
     agents:
       queue: fma-dev
