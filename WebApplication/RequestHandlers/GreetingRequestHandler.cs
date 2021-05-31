@@ -7,9 +7,8 @@ namespace WebApplication.RequestHandlers
 {
     public class GreetingRequestHandler : IGreetingRequestHandler
     {
-        private IRequest _request;
         private IResponse _response;
-        private GreetingService _greetingService;
+        private readonly GreetingService _greetingService;
 
         public GreetingRequestHandler(GreetingService greetingService)
         {
@@ -17,10 +16,10 @@ namespace WebApplication.RequestHandlers
         }
         public void HandleRequest(IContext context)
         {
-            _request = context.Request;
+            var _request = context.Request;
             _response = context.Response;
 
-            switch (context.Request.HttpMethod)
+            switch (_request.HttpMethod)
             {
                 case "GET":
                     Greeting();

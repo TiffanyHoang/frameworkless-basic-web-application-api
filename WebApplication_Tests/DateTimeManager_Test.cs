@@ -9,8 +9,7 @@ namespace WebApplication_Tests
         [Fact]
         public void GivenDateTime_ReturnCorrectTimeFormatHHmm()
         {
-            DateTimeManager dateTimeManager = new DateTimeManager();
-            var actualFormat = dateTimeManager.GetCurrentTime();
+            var actualFormat = DateTimeManager.GetCurrentTime();
             var expectedFormat = DateTime.Now.ToUniversalTime().ToString("HH:mm");
             Assert.Equal(expectedFormat, actualFormat);
         }
@@ -18,8 +17,7 @@ namespace WebApplication_Tests
         [Fact]
         public void GivenDateTime_ReturnCorrectDateFormatddMMMyyyy()
         {
-            DateTimeManager dateTimeManager = new DateTimeManager();
-            var actualFormat = dateTimeManager.GetCurrentDate();
+            var actualFormat = DateTimeManager.GetCurrentDate();
             var expectedFormat = DateTime.Now.ToUniversalTime().ToString("dd MMM yyyy");
             Assert.Equal(expectedFormat, actualFormat);
         }

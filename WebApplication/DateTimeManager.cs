@@ -2,19 +2,17 @@ using System;
 
 namespace WebApplication
 {
-    public class DateTimeManager
+    public static class DateTimeManager
     {
-        private DateTime time;
-        public DateTimeManager() => time = new DateTime();
-        public string GetCurrentTime()
+        public static string GetCurrentTime()
         {
-            time = DateTime.Now.ToUniversalTime();
+            var time = DateTime.Now.ToUniversalTime();
             string currentTimeFormat = "HH:mm";
             return time.ToString(currentTimeFormat);
         }
-        public string GetCurrentDate()
+        public static string GetCurrentDate()
         {
-            time = DateTime.Now.ToUniversalTime();
+            var time = DateTime.Now.ToUniversalTime();
             string currentDateFormat = "dd MMM yyyy";
             return time.ToString(currentDateFormat);
         }

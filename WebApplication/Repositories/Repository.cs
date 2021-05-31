@@ -4,7 +4,7 @@ namespace WebApplication.Repositories
 {
     public class Repository
     {
-        private List<Person> _peopleList;
+        private readonly List<Person> _peopleList;
         public string defaultPersonName = "Tiffany";
         public Repository()
         {

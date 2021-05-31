@@ -2,7 +2,7 @@ using System;
 
 namespace WebApplication
 {
-    public class Person : IEquatable<Person>
+    public sealed class Person : IEquatable<Person>
     {
         public string Name { get; set; }
         public Person(string name) => Name = name;

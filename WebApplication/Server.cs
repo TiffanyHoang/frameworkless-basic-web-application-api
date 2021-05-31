@@ -12,7 +12,7 @@ namespace WebApplication
     {
         private readonly HttpListener _listener;
         private readonly RouteController _routeController;
-        private string port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+        private readonly string port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
         public Server()
         {
             _listener = new HttpListener();
@@ -34,6 +34,7 @@ namespace WebApplication
         public async Task Start()
         {
             _listener.Start();
+            Console.WriteLine($"Server started, listening on port {port}");
             Console.WriteLine($"Server started, listening on port {port}");
             while (true)
             {

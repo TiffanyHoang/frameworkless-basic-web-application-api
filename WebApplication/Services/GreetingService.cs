@@ -17,8 +17,7 @@ namespace WebApplication.Services
         {
             try
             {
-                DateTimeManager dateTimeManager = new DateTimeManager();
-                var timeText = $"The time on the server is {dateTimeManager.GetCurrentTime()} on {dateTimeManager.GetCurrentDate()}";
+                var timeText = $"The time on the server is {DateTimeManager.GetCurrentTime()} on {DateTimeManager.GetCurrentDate()}";
 
                 var peopleListString = "";
                 foreach (var person in _repository.GetPeopleList())
