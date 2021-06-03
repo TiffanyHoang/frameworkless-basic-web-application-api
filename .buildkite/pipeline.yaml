@@ -53,8 +53,6 @@ steps:
     agents:
       queue: fma-dev
       
-  - wait 
-
   - label: ':rocket: Deploy to AWS PROD'
     branches: main
     command: 
