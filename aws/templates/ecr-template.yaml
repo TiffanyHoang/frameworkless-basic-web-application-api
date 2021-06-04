@@ -5,19 +5,4 @@ Resources:
     Type: AWS::ECR::Repository
     Properties:
       RepositoryName: tiffany-frameworkless-basic-web-app-api
-      LifecyclePolicy: 
-        LifecyclePolicyText: |
-          {
-            "rules": [
-            {
-              "rulePriority": 1,
-              "description": "Only keep 5 images",
-              "selection": {
-                "tagStatus": "any",
-                "countType": "imageCountMoreThan",
-                "countNumber": 5
-              },
-              "action": { "type": "expire" }
-            }]
-          }
-        RegistryId: 274387265859 # fma-dev
+
