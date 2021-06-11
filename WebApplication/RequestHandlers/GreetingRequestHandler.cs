@@ -5,7 +5,7 @@ using WebApplication.Services;
 
 namespace WebApplication.RequestHandlers
 {
-    public class GreetingRequestHandler : IGreetingRequestHandler
+    public class GreetingRequestHandler : IRequestHandler
     {
         private IResponse _response;
         private readonly GreetingService _greetingService;
@@ -16,17 +16,23 @@ namespace WebApplication.RequestHandlers
         }
         public void HandleRequest(IContext context)
         {
-            var _request = context.Request;
+            var request = context.Request;
             _response = context.Response;
-
-            switch (_request.HttpMethod)
+            if (Authentication.ValidateAuthentication(request))
             {
-                case "GET":
-                    Greeting();
-                    break;
-                default:
-                    HandleInvalidVerbRequest();
-                    break;
+                switch (request.HttpMethod)
+                {
+                    case "GET":
+                        Greeting();
+                        break;
+                    default:
+                        HandleInvalidVerbRequest();
+                        break;
+                }
+            }
+            else 
+            {
+                _response.StatusCode = (int)HttpStatusCode.Unauthorized;
             }
         }
 

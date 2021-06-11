@@ -22,19 +22,20 @@ namespace WebApplication
 
             GreetingService greetingService = new GreetingService(repository);
 
-            IGreetingRequestHandler greetingRequestHandler = new GreetingRequestHandler(greetingService);
+            IRequestHandler greetingRequestHandler = new GreetingRequestHandler(greetingService);
             
             PeopleService peopleService = new PeopleService(repository);
 
-            IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(peopleService);
+            IRequestHandler peopleRequestHandler = new PeopleRequestHandler(peopleService);
 
-            _routeController = new RouteController(greetingRequestHandler, peopleRequestHandler);
+            IRequestHandler healthCheckHandler = new HealthCheckHandler();
+
+            _routeController = new RouteController(greetingRequestHandler, peopleRequestHandler, healthCheckHandler);
         }
 
         public async Task Start()
         {
             _listener.Start();
-            Console.WriteLine($"Server started, listening on port {port}");
             Console.WriteLine($"Server started, listening on port {port}");
             while (true)
             {

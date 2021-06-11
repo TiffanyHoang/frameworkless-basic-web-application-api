@@ -1,14 +1,17 @@
 @serverPrefix = http://localhost:8080
+@SECRET=secret
+@header = Authorization: Basic {{SECRET}}
 
 GET {{serverPrefix}}
-
+{{header}}
 ###
 
 GET {{serverPrefix}}/people
-
+{{header}}
 ###
 
 POST {{serverPrefix}}/people
+{{header}}
 
 {
     "Name":"DS"
@@ -17,6 +20,7 @@ POST {{serverPrefix}}/people
 ###
 
 POST {{serverPrefix}}/people
+{{header}}
 
 {
     "Name":"Mattias"
@@ -25,6 +29,7 @@ POST {{serverPrefix}}/people
 ###
 
 PUT {{serverPrefix}}/people/DS
+{{header}}
 
 {
     "Name":"DSTeoh"
@@ -33,15 +38,20 @@ PUT {{serverPrefix}}/people/DS
 ### 
 
 DELETE {{serverPrefix}}/people/Mattias
-
+{{header}}
 ###
 
 GET {{serverPrefix}}/invalidPath
-
+{{header}}
 ###
 
 POST {{serverPrefix}}
-
+{{header}}
 ###
 
 PATCH {{serverPrefix}}/people
+{{header}}
+###
+
+GET {{serverPrefix}}/health
+###

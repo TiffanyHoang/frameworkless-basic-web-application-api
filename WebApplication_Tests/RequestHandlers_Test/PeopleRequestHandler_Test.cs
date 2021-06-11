@@ -9,6 +9,7 @@ using System.Text;
 using WebApplication.Http;
 using WebApplication.Services;
 using WebApplication.Repositories;
+using System.Collections.Specialized;
 
 namespace WebApplication_Tests
 {
@@ -16,17 +17,22 @@ namespace WebApplication_Tests
     {
         private PeopleService _peopleService;
         private readonly PeopleRequestHandler _peopleRequestHandler;
+        private readonly NameValueCollection _headers;
         public PeopleRequestHandler_Test()
         {
+            var secret = Environment.GetEnvironmentVariable("SECRET");
             var repository = new Repository();
             _peopleService = new PeopleService(repository);
             _peopleRequestHandler = new PeopleRequestHandler(_peopleService);
+            _headers = new NameValueCollection();
+            _headers.Add("Authorization", "Basic " + secret);
         }
 
         [Fact]
         public void HandleGetPeople_RespondListOfPeopleInJsonFormatAndOKStatusCode()
         {
-            var request = Mock.Of<IRequest>(r => r.HttpMethod == "GET");
+            var request = Mock.Of<IRequest>(r => r.HttpMethod == "GET" &&
+                r.Headers == _headers);
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
@@ -46,7 +52,8 @@ namespace WebApplication_Tests
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "POST" &&
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DS\"}")) &&
-                r.ContentEncoding == Encoding.UTF8
+                r.ContentEncoding == Encoding.UTF8 &&
+                r.Headers == _headers
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
@@ -66,7 +73,8 @@ namespace WebApplication_Tests
         {
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "POST" &&
-                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) && r.ContentEncoding == Encoding.UTF8
+                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) && r.ContentEncoding == Encoding.UTF8  &&
+                r.Headers == _headers
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
@@ -83,7 +91,8 @@ namespace WebApplication_Tests
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DSTeoh\"}")) &&
-                r.ContentEncoding == Encoding.UTF8 && r.Url == new Uri("/people/DS")
+                r.ContentEncoding == Encoding.UTF8 && r.Url == new Uri("/people/DS") &&
+                r.Headers == _headers
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
@@ -105,7 +114,8 @@ namespace WebApplication_Tests
                 r.HttpMethod == "PUT" &&
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) &&
                 r.ContentEncoding == Encoding.UTF8 &&
-                r.Url == new Uri("/people/Tiffany")
+                r.Url == new Uri("/people/Tiffany") &&
+                r.Headers == _headers
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
@@ -123,7 +133,8 @@ namespace WebApplication_Tests
                 r.HttpMethod == "PUT" &&
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) &&
                 r.ContentEncoding == Encoding.UTF8 &&
-                r.Url == new Uri("/people/Tiff")
+                r.Url == new Uri("/people/Tiff") &&
+                r.Headers == _headers
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
@@ -136,11 +147,13 @@ namespace WebApplication_Tests
         [Fact]
         public void HandleUpdatePerson_OldNameIsNotExisted_RespondNotFoundStatus()
         {
+           
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DSTeoh\"}")) &&
                 r.ContentEncoding == Encoding.UTF8 &&
-                r.Url == new Uri("/people/DS")
+                r.Url == new Uri("/people/DS") &&
+                r.Headers == _headers
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
@@ -156,7 +169,9 @@ namespace WebApplication_Tests
             _peopleService.CreatePerson(new Person("Mattias"));
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "DELETE" &&
-                r.Url == new Uri("/people/Mattias"));
+                r.Url == new Uri("/people/Mattias") &&
+                r.Headers == _headers
+                );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
@@ -170,7 +185,9 @@ namespace WebApplication_Tests
         {
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "DELETE" &&
-                r.Url == new Uri("/people/Mattias"));
+                r.Url == new Uri("/people/Mattias") &&
+                r.Headers == _headers
+                );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
@@ -184,7 +201,9 @@ namespace WebApplication_Tests
         {
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "DELETE" &&
-                r.Url == new Uri("/people/Tiffany"));
+                r.Url == new Uri("/people/Tiffany") &&
+                r.Headers == _headers
+                );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
@@ -198,7 +217,9 @@ namespace WebApplication_Tests
         {
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "INVALIDMETHOD" &&
-                r.Url == new Uri("/people"));
+                r.Url == new Uri("/people") &&
+                r.Headers == _headers
+                );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 

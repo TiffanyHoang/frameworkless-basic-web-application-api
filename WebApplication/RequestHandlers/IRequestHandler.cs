@@ -2,7 +2,7 @@ using WebApplication.Http;
 
 namespace WebApplication.RequestHandlers
 {
-    public interface IGreetingRequestHandler
+    public interface IRequestHandler
     {
         void HandleRequest(IContext context);
     }

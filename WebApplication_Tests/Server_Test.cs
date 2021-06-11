@@ -5,6 +5,7 @@ using WebApplication;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Net.Http.Headers;
 
 namespace WebApplication_Tests
 {
@@ -16,8 +17,11 @@ namespace WebApplication_Tests
 
         public Server_Test()
         {   
+            var secret = Environment.GetEnvironmentVariable("SECRET");
             _endpoint = Environment.GetEnvironmentVariable("ENDPOINT") ?? "http://localhost:8080";
             _client = new HttpClient();
+            _client.DefaultRequestHeaders.Authorization 
+                         = new AuthenticationHeaderValue("Basic", secret);
             if(_endpoint == "http://localhost:8080")
             {
                 _server = new Server();

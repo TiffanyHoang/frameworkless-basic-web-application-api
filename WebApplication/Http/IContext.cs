@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -17,6 +18,7 @@ namespace WebApplication.Http
         Encoding ContentEncoding { get; }
         Uri Url { get; }
         string HttpMethod { get; }
+        NameValueCollection Headers { get; }
     }
 
     public interface IResponse

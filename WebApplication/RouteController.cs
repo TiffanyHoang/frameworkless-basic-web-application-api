@@ -8,13 +8,15 @@ namespace WebApplication
 {
     public class RouteController
     {
-        private readonly IGreetingRequestHandler _greetingRequestHandler;
-        private readonly IPeopleRequestHandler _peopleRequestHandler;
+        private readonly IRequestHandler _greetingRequestHandler;
+        private readonly IRequestHandler _peopleRequestHandler;
+        private readonly IRequestHandler _healthCheckHandler;
 
-        public RouteController( IGreetingRequestHandler greetingRequestHandler, IPeopleRequestHandler peopleRequestHandler)
+        public RouteController(IRequestHandler greetingRequestHandler, IRequestHandler peopleRequestHandler, IRequestHandler healthCheckHandler)
         {
             _greetingRequestHandler = greetingRequestHandler;
             _peopleRequestHandler = peopleRequestHandler;
+            _healthCheckHandler = healthCheckHandler;
         }
 
         public void RequestRouter(IContext context)
@@ -24,6 +26,7 @@ namespace WebApplication
             Console.WriteLine($"Requesting {method} {path}");
             var rootPath = new Regex("^/$");
             var peoplePath = new Regex("^/people/?");
+            var healthPath = new Regex("^/health");
 
             if (rootPath.IsMatch(path))
             {
@@ -34,6 +37,12 @@ namespace WebApplication
             if (peoplePath.IsMatch(path))
             {
                 _peopleRequestHandler.HandleRequest(context);
+                return;
+            }
+
+            if (healthPath.IsMatch(path))
+            {
+                _healthCheckHandler.HandleRequest(context);
                 return;
             }
 

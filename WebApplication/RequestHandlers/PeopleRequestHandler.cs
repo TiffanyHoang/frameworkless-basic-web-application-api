@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text.Json;
@@ -7,7 +8,7 @@ using WebApplication.Services;
 namespace WebApplication.RequestHandlers
 {
 
-    public class PeopleRequestHandler : IPeopleRequestHandler
+    public class PeopleRequestHandler : IRequestHandler
     {
         private IRequest _request;
         private IResponse _response;
@@ -21,24 +22,30 @@ namespace WebApplication.RequestHandlers
         {
             _request = context.Request;
             _response = context.Response;
-
-            switch (_request.HttpMethod)
+            if (Authentication.ValidateAuthentication(_request))
             {
-                case "GET":
-                    Get();
-                    break;
-                case "POST":
-                    Create();
-                    break;
-                case "PUT":
-                    Update();
-                    break;
-                case "DELETE":
-                    Delete();
-                    break;
-                default:
-                    HandleInvalidVerbRequest();
-                    break;
+                switch (_request.HttpMethod)
+                {
+                    case "GET":
+                        Get();
+                        break;
+                    case "POST":
+                        Create();
+                        break;
+                    case "PUT":
+                        Update();
+                        break;
+                    case "DELETE":
+                        Delete();
+                        break;
+                    default:
+                        HandleInvalidVerbRequest();
+                        break;
+                }
+            } 
+            else 
+            {
+                _response.StatusCode = (int)HttpStatusCode.Unauthorized;
             }
         }
 

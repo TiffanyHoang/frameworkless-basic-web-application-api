@@ -20,6 +20,8 @@ Parameters:
     Type: String
   CNAMERecordValue:
     Type: String
+  secret:
+    Type: String
 Resources:
   ALBSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
@@ -118,6 +120,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties: 
       HealthCheckEnabled: true
+      HealthCheckPath: /health
       Name: !Sub tiffany-api-target-group-${version}
       TargetType: ip
       VpcId: !Ref vpcId
@@ -140,6 +143,9 @@ Resources:
           Image: !Sub 274387265859.dkr.ecr.ap-southeast-2.amazonaws.com/tiffany-frameworkless-basic-web-app-api:${imageVersion}
           PortMappings: 
             - ContainerPort: 8080
+          Environment:
+            - name: SECRET
+              value: !Ref secret
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties: 

@@ -8,6 +8,7 @@ using System.Text;
 using WebApplication.Repositories;
 using WebApplication.Http;
 using WebApplication.Services;
+using System.Collections.Specialized;
 
 namespace WebApplication_Tests
 {
@@ -16,16 +17,21 @@ namespace WebApplication_Tests
 
         private GreetingService _greetingService;
         private readonly GreetingRequestHandler _greetingRequestHandler;
+        private readonly NameValueCollection _headers;
         public GreetingRequestHandler_Test()
         {
+            var secret = Environment.GetEnvironmentVariable("SECRET");
             var repository = new Repository();
             _greetingService = new GreetingService(repository);
             _greetingRequestHandler = new GreetingRequestHandler(_greetingService);
+            _headers = new NameValueCollection();
+            _headers.Add("Authorization", "Basic " + secret );
         }
         [Fact]
         public void HandleGreeting_ReturnCorrectGreetingMessage()
         {
-            var request = Mock.Of<IRequest>(r => r.HttpMethod == "GET");
+            var request = Mock.Of<IRequest>(r => r.HttpMethod == "GET" &&
+                r.Headers == _headers);
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
@@ -47,7 +53,8 @@ namespace WebApplication_Tests
         public void InvalidMethod_RespondMethodNotAllowedStatus()
         {
             var request = Mock.Of<IRequest>(r =>
-                r.HttpMethod == "INVALIDMETHOD");
+                r.HttpMethod == "INVALIDMETHOD" &&
+                r.Headers == _headers);
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 

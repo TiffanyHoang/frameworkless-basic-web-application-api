@@ -30,11 +30,13 @@ namespace WebApplication_Tests
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
-            var greetingRequestHandler = new Mock<IGreetingRequestHandler>();
+            var greetingRequestHandler = new Mock<IRequestHandler>();
 
-            IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(_peopleService);
+            IRequestHandler peopleRequestHandler = new PeopleRequestHandler(_peopleService);
+            
+            IRequestHandler healthCheckHandler = new HealthCheckHandler();
 
-            RouteController routeController = new RouteController( greetingRequestHandler.Object, peopleRequestHandler);
+            RouteController routeController = new RouteController( greetingRequestHandler.Object, peopleRequestHandler, healthCheckHandler);
 
             routeController.RequestRouter(context);
 
@@ -42,17 +44,19 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void RequestRouter_PepplePath_ShouldCallPeopleRequestHandler()
+        public void RequestRouter_PeoplePath_ShouldCallPeopleRequestHandler()
         {
             var request = Mock.Of<IRequest>(r => r.Url == new Uri("http://localhost:8080/people"));
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
-            IGreetingRequestHandler greetingRequestHandler = new GreetingRequestHandler(_greetingService);
+            IRequestHandler greetingRequestHandler = new GreetingRequestHandler(_greetingService);
 
-            var peopleRequestHandler = new Mock<IPeopleRequestHandler>();
+            var peopleRequestHandler = new Mock<IRequestHandler>();
+            
+            IRequestHandler healthCheckHandler = new HealthCheckHandler();
 
-            RouteController routeController = new RouteController( greetingRequestHandler, peopleRequestHandler.Object);
+            RouteController routeController = new RouteController(greetingRequestHandler, peopleRequestHandler.Object, healthCheckHandler);
 
             routeController.RequestRouter(context);
 
@@ -60,17 +64,19 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void RequestRouter_UnvalidPath_ReturnNotFoundStatus()
+        public void RequestRouter_InvalidPath_ReturnNotFoundStatus()
         {
-            var request = Mock.Of<IRequest>(r => r.Url == new Uri("http://localhost:8080/Unvalid"));
+            var request = Mock.Of<IRequest>(r => r.Url == new Uri("http://localhost:8080/Invalid"));
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
-            IGreetingRequestHandler greetingRequestHandler = new GreetingRequestHandler(_greetingService);
+            IRequestHandler greetingRequestHandler = new GreetingRequestHandler(_greetingService);
 
-            IPeopleRequestHandler peopleRequestHandler = new PeopleRequestHandler(_peopleService);
+            IRequestHandler peopleRequestHandler = new PeopleRequestHandler(_peopleService);
 
-            RouteController routeController = new RouteController(greetingRequestHandler, peopleRequestHandler);
+            IRequestHandler healthCheckHandler = new HealthCheckHandler();
+
+            RouteController routeController = new RouteController(greetingRequestHandler, peopleRequestHandler, healthCheckHandler);
 
             routeController.RequestRouter(context);
 

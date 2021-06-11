@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -25,6 +26,7 @@ namespace WebApplication.Http
         public Encoding ContentEncoding => _request.ContentEncoding;
         public Uri Url => _request.Url;
         public string HttpMethod => _request.HttpMethod;
+        public NameValueCollection Headers => _request.Headers;
     }
 
     public class Response : IResponse

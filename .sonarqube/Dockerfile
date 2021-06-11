@@ -5,6 +5,7 @@ ARG PROJECT_KEY
 ARG PROJECT_NAME
 ARG TOKEN
 ARG SOLUTION_FILE
+ARG SECRET
 
 COPY . ./
 
@@ -20,6 +21,7 @@ RUN dotnet tool install --global dotnet-sonarscanner
 RUN dotnet tool install --global coverlet.console --version 1.7.2
 ENV PATH="$PATH:/root/.dotnet/tools"
 ENV LANG C.UTF-8
+ENV SECRET="secret"
 
 # Start SonarScanner
 RUN dotnet sonarscanner begin \
@@ -33,7 +35,7 @@ RUN dotnet sonarscanner begin \
 # Run unit tests and build
 RUN dotnet build "$SOLUTION_FILE"
 
-RUN  coverlet WebApplication_Tests/bin/Debug/net5.0/WebApplication_Tests.dll \
+RUN coverlet WebApplication_Tests/bin/Debug/net5.0/WebApplication_Tests.dll \
               --target "dotnet" \
               --targetargs "test WebApplication_Tests/bin/Debug/net5.0/WebApplication_Tests.dll" \
               --format opencover \

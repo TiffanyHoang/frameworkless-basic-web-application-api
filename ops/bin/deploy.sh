@@ -17,12 +17,14 @@ CERTIFICATE='arn:aws:acm:ap-southeast-2:274387265859:certificate/7c22e6e5-f370-4
 DOMAINNAME=$VERSION.tiffany-dev.fma.lab.myobdev.com
 CNAMERECORDNAME='_11e5c2f4dd01a22721bacb444f57c71b.tiffany-dev.fma.lab.myobdev.com'
 CNAMERECORDVALUE='_9053780dc4bbad6b9e746ecb898ecb43.jddtvkljgg.acm-validations.aws.'
+SECRET="secret"
 else
 VERSION='prod'
 CERTIFICATE='arn:aws:acm:ap-southeast-2:274387265859:certificate/c62856b3-deea-48e3-aa85-55531dfdcb25'
 DOMAINNAME='tiffany-prod.fma.lab.myobdev.com'
 CNAMERECORDNAME='_5a4fbae31879e3af450f355b4be7f2cd.tiffany-prod.fma.lab.myobdev.com'
 CNAMERECORDVALUE='_75d48eef67f56bc9b8a1ffea8399ede0.zzxlnyslwt.acm-validations.aws.'
+SECRET=$(aws ssm get-parameter --name "tiffany-app-secret" --query Parameter.Value --output text --region ap-southeast-2) 
 fi
 aws cloudformation deploy \
     --template-file ./aws/templates/deployment-template.yaml \
@@ -37,5 +39,6 @@ aws cloudformation deploy \
         domainName=$DOMAINNAME \
         CNAMERecordName=$CNAMERECORDNAME \
         CNAMERecordValue=$CNAMERECORDVALUE \
+        secret=$SECRET \
     --stack-name $STACKNAME$VERSION \
     --region ap-southeast-2
