@@ -2,16 +2,16 @@ steps:
   - label: ':checkered_flag: Run Unit Tests'
     command: ./ops/bin/unit-tests.sh
     agents:
-      queue: grace-lab
+      queue: fma-dev
     
   - label: ':shipit: Sonar scan'
     command: ./.sonarqube/scan.sh
     agents:
-      queue: grace-lab
+      queue: fma-dev
 
   - wait
 
-  - label: ':gear: Prepare repo in ECR DEV'
+  - label: ':gear: Prepare repo in ECR'
     command: ./ops/bin/prepare-ecr-repo.sh
     plugins:
       - ecr#v2.3.0:
@@ -21,8 +21,8 @@ steps:
 
   - wait 
 
-  - label: ':gear: Build & push app to ECR in DEV'
-    command: ./ops/bin/build-push-to-ecr-dev.sh
+  - label: ':gear: Build & push app to ECR'
+    command: ./ops/bin/build-push-to-ecr.sh
     plugins:
       - ecr#v2.3.0:
           login: true
@@ -31,38 +31,38 @@ steps:
 
   - wait 
 
-  - label: ':rocket: Deploy to AWS DEV'
-    command: ./ops/bin/deploy.sh dev
+  - label: ':rocket: Deploy to Jupiter DEV'
+    command: ./ops/bin/jupiter-deploy.sh dev
     agents:
-      queue: fma-dev
+      queue: europa-preprod-fma
 
   - wait 
   
   - label: ':crossed_fingers: End to End Tests'
     key: end-to-end-test
-    command: ./ops/bin/e2e-tests.sh
+    command: ./ops/bin/jupiter-e2e-tests.sh
     agents:
       queue: fma-dev
   
   - wait 
   
-  - label: ':hand: Delete test deployment stack in DEV'
-    command: ./ops/bin/delete-deployment-stack-dev.sh
+  - label: ':hand: Delete test service in Jupiter DEV'
+    command: ./ops/bin/jupiter-delete-service-dev.sh
     depends_on: end-to-end-test
     allow_dependency_failure: true
     agents:
-      queue: fma-dev
+      queue: europa-preprod-fma
       
   - wait: ~
     if: build.branch == "main"
 
-  - label: ':rocket: Deploy to AWS PROD'
+  - label: ':rocket: Deploy to Jupiter PROD'
     branches: main
     command: 
-      - ./ops/bin/deploy.sh prod 
+      - ./ops/bin/jupiter-deploy.sh prod 
       - ./ops/bin/buildkite-annotation.sh
     agents:
-      queue: fma-dev
+      queue: europa-preprod-fma
 
   - wait: ~
     if: build.branch == "main"
@@ -70,7 +70,7 @@ steps:
   - label: ':sunglasses: Prod endpoints test'
     branches: main
     command: 
-      - ./ops/bin/smoke-test.sh
+      - ./ops/bin/jupiter-smoke-test.sh
     agents:
-      queue: fma-dev
+      queue: europa-preprod-fma
   

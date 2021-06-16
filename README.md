@@ -5,7 +5,7 @@ A .NET Core solution to [the Frameworkless Basic Web Application kata](https://g
 
 ## Endpoints
 [https://tiffany-prod.fma.lab.myobdev.com](https://tiffany-prod.fma.lab.myobdev.com)   
-These are the supported endpoints along with example responses. Use your favourite HTTP client, such as Postman or REST client, to make requests!
+These are the supported endpoints along with example responses. Use your favourite HTTP client, such as Postman or REST client, to make requests!   
 
 ## GET / 
 Return greeting message   
