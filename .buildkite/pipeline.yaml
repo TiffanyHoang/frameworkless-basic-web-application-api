@@ -63,4 +63,14 @@ steps:
       - ./ops/bin/buildkite-annotation.sh
     agents:
       queue: fma-dev
+
+  - wait: ~
+    if: build.branch == "main"
+
+  - label: ':sunglasses: Prod endpoints test'
+    branches: main
+    command: 
+      - ./ops/bin/smoke-test.sh
+    agents:
+      queue: fma-dev
   

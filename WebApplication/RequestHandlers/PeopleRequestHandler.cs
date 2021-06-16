@@ -22,30 +22,30 @@ namespace WebApplication.RequestHandlers
         {
             _request = context.Request;
             _response = context.Response;
-            if (Authentication.ValidateAuthentication(_request))
-            {
-                switch (_request.HttpMethod)
-                {
-                    case "GET":
-                        Get();
-                        break;
-                    case "POST":
-                        Create();
-                        break;
-                    case "PUT":
-                        Update();
-                        break;
-                    case "DELETE":
-                        Delete();
-                        break;
-                    default:
-                        HandleInvalidVerbRequest();
-                        break;
-                }
-            } 
-            else 
+        
+            if (!Authentication.ValidateAuthentication(_request))
             {
                 _response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return;
+            }
+            
+            switch (_request.HttpMethod)
+            {
+                case "GET":
+                    Get();
+                    break;
+                case "POST":
+                    Create();
+                    break;
+                case "PUT":
+                    Update();
+                    break;
+                case "DELETE":
+                    Delete();
+                    break;
+                default:
+                    HandleInvalidVerbRequest();
+                    break;
             }
         }
 

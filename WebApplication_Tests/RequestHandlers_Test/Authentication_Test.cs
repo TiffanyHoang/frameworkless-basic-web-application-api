@@ -29,6 +29,16 @@ namespace WebApplication_Tests
             var actual = Authentication.ValidateAuthentication(request);
             Assert.False(actual);
         }
+
+        [Fact]
+        public void NoAuthorizationKey_ReturnFalse()
+        {
+            var headers = new NameValueCollection();
+            headers.Add("", "");
+            var request = Mock.Of<IRequest>(r => r.Headers == headers);
+            var actual = Authentication.ValidateAuthentication(request);
+            Assert.False(actual);
+        }   
     }
 
 }

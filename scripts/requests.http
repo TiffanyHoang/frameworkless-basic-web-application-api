@@ -6,8 +6,15 @@ GET {{serverPrefix}}
 {{header}}
 ###
 
+GET {{serverPrefix}}
+###
+
 GET {{serverPrefix}}/people
 {{header}}
+###
+
+
+GET {{serverPrefix}}/people
 ###
 
 POST {{serverPrefix}}/people

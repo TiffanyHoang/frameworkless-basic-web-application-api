@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using WebApplication.Http;
+using System.Collections.Generic;
 
 namespace WebApplication.RequestHandlers
 {
@@ -7,10 +9,18 @@ namespace WebApplication.RequestHandlers
     {
         public static bool ValidateAuthentication(IRequest request)
         {
+            var headers = request.Headers;   
+            var headerKeys = headers.Keys.OfType<string>();
+            List<string> stringHeaderKeys = headerKeys.Select(s => (string)s.ToLower()).ToList();
+            var isAuthorizationKeyAdded = stringHeaderKeys.Contains("Authorization".ToLower());
+            if (!isAuthorizationKeyAdded)
+            {
+                return false;
+            }
             var secret = Environment.GetEnvironmentVariable("SECRET");
-            var headers = request.Headers;        
             string[] values = headers.GetValues("Authorization");
-            return values[0].ToString() == "Basic " + secret;
+            var isAuthorizationValueCorrect = values[0].ToString() == "Basic " + secret;
+            return isAuthorizationKeyAdded && isAuthorizationValueCorrect;
         }
     }
 }

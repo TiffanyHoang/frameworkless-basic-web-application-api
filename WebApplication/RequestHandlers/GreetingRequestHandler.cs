@@ -18,22 +18,22 @@ namespace WebApplication.RequestHandlers
         {
             var request = context.Request;
             _response = context.Response;
-            if (Authentication.ValidateAuthentication(request))
-            {
-                switch (request.HttpMethod)
-                {
-                    case "GET":
-                        Greeting();
-                        break;
-                    default:
-                        HandleInvalidVerbRequest();
-                        break;
-                }
-            }
-            else 
+
+            if(!Authentication.ValidateAuthentication(request))
             {
                 _response.StatusCode = (int)HttpStatusCode.Unauthorized;
             }
+
+            switch (request.HttpMethod)
+            {
+                case "GET":
+                    Greeting();
+                    break;
+                default:
+                    HandleInvalidVerbRequest();
+                    break;
+            }
+           
         }
 
         private void Greeting()
