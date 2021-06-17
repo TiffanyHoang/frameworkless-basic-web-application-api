@@ -18,3 +18,5 @@ ktmpl ./kube/templates/deployment.yaml \
     --parameter host "$NAME.svc.platform.myobdev.com" \
     --parameter secret "$SECRET" \
 | kubectl apply -f -
+
+timeout 30 kubectl rollout status --watch=true deployment $NAME -n fma

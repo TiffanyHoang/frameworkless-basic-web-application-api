@@ -226,5 +226,16 @@ namespace WebApplication_Tests
             _peopleRequestHandler.HandleRequest(context);
             Assert.Equal((int)HttpStatusCode.MethodNotAllowed, response.StatusCode);
         }
+        [Fact]
+        public void ValidateAuthentication_NoHeader_ReturnUnauthorizedStatus()
+        {
+            var request = Mock.Of<IRequest>(r => r.HttpMethod == "GET");
+            var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
+            var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+
+            _peopleRequestHandler.HandleRequest(context);
+
+            Assert.Equal((int)HttpStatusCode.Unauthorized, response.StatusCode);
+        }
     }
 }
