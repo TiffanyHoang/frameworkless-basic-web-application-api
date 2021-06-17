@@ -52,12 +52,9 @@ steps:
     allow_dependency_failure: true
     agents:
       queue: fma-dev
-      
-  - wait: ~
-    if: build.branch == "main"
 
   - label: ':rocket: Deploy to AWS PROD'
-    branches: main
+    # branches: main
     command: 
       - ./ops/bin/deploy.sh prod 
       - ./ops/bin/buildkite-annotation.sh
@@ -68,7 +65,7 @@ steps:
     if: build.branch == "main"
 
   - label: ':sunglasses: Prod endpoints test'
-    branches: main
+    # branches: main
     command: 
       - ./ops/bin/smoke-test.sh
     agents:
