@@ -61,9 +61,10 @@ steps:
     agents:
       queue: fma-dev
 
-  - wait: ~
-    if: build.branch == "main"
-
+  # - wait: ~
+  #   if: build.branch == "main"
+  - wait
+  
   - label: ':sunglasses: Prod endpoints test'
     # branches: main
     command: 
