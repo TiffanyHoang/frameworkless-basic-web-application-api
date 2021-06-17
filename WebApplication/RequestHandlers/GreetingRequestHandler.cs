@@ -22,6 +22,7 @@ namespace WebApplication.RequestHandlers
             if(!Authentication.ValidateAuthentication(request))
             {
                 _response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return;
             }
 
             switch (request.HttpMethod)
