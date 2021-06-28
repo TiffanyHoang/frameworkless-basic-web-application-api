@@ -15,13 +15,13 @@ namespace Server_Tests
         private Server _server;
         private string _endpoint;
         public Server_Test()
-        {   
+        {
             var secret = Environment.GetEnvironmentVariable("SECRET");
             _endpoint = Environment.GetEnvironmentVariable("ENDPOINT") ?? "http://localhost:8080";
             _client = new HttpClient();
-            _client.DefaultRequestHeaders.Authorization 
+            _client.DefaultRequestHeaders.Authorization
                          = new AuthenticationHeaderValue("Basic", secret);
-            if(_endpoint == "http://localhost:8080")
+            if (_endpoint == "http://localhost:8080")
             {
                 _server = new Server();
                 _server.Start();
@@ -30,12 +30,12 @@ namespace Server_Tests
 
         public void Dispose()
         {
-             if(_endpoint == "http://localhost:8080")
+            if (_endpoint == "http://localhost:8080")
             {
                 _server.Close();
             }
         }
-        
+
         [Fact]
         public async Task E2E_Test()
         {

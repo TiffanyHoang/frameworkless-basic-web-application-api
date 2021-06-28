@@ -7,14 +7,14 @@ using Serilog;
 
 namespace WebApplication.Services
 {
-    public class PeopleService:IPeopleService
+    public class PeopleService : IPeopleService
     {
         private readonly Repository _repository;
         public PeopleService(Repository repository)
         {
             _repository = repository;
         }
-        
+
         public List<Person> GetPeopleList()
         {
             try

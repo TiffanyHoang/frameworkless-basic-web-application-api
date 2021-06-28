@@ -5,7 +5,7 @@ using System.Net.Http;
 
 namespace WebApplication.Services
 {
-    public class GreetingService:IGreetingService
+    public class GreetingService : IGreetingService
     {
         private readonly Repository _repository;
         public GreetingService(Repository repository)

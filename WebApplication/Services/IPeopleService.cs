@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace WebApplication.Services
 {
     public interface IPeopleService
-    {        
+    {
         List<Person> GetPeopleList();
 
         (int statusCode, Person person) CreatePerson(Person person);

@@ -19,7 +19,7 @@ namespace WebApplication.RequestHandlers
             var request = context.Request;
             _response = context.Response;
 
-            if(!Authentication.ValidateAuthentication(request))
+            if (!Authentication.ValidateAuthentication(request))
             {
                 _response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 return;

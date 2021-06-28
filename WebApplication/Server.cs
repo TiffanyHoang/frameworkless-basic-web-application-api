@@ -17,14 +17,14 @@ namespace WebApplication
         {
             _listener = new HttpListener();
             _listener.Prefixes.Add($"http://*:{port}/");
-            
+
             var database = new Database();
             Repository repository = new Repository(database);
 
             IGreetingService greetingService = new GreetingService(repository);
 
             IRequestHandler greetingRequestHandler = new GreetingRequestHandler(greetingService);
-            
+
             IPeopleService peopleService = new PeopleService(repository);
 
             IRequestHandler peopleRequestHandler = new PeopleRequestHandler(peopleService);
@@ -44,7 +44,7 @@ namespace WebApplication
                 var context = new Context(listenerContext);
                 _routeController.RequestRouter(context);
                 context.Close();
-            }          
+            }
         }
         public void Close()
         {

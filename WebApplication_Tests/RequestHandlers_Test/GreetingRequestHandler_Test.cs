@@ -23,7 +23,7 @@ namespace WebApplication_Tests
             _greetingService = new Mock<IGreetingService>();
             _greetingRequestHandler = new GreetingRequestHandler(_greetingService.Object);
             _headers = new NameValueCollection();
-            _headers.Add("Authorization", "Basic " + secret );
+            _headers.Add("Authorization", "Basic " + secret);
         }
         [Fact]
         public void HandleGreeting_ReturnCorrectGreetingMessage()
@@ -37,7 +37,7 @@ namespace WebApplication_Tests
             var date = DateTime.Now.ToUniversalTime().ToString("dd MMM yyyy");
             var expectedResponse = $"Hello Tiffany - The time on the server is {time} on {date}";
 
-                        
+
             _greetingService.Setup(s => s.Greeting()).Returns(expectedResponse);
 
             _greetingRequestHandler.HandleRequest(context);

@@ -21,7 +21,6 @@ namespace WebApplication.RequestHandlers
                     HandleInvalidVerbRequest();
                     break;
             }
-            
         }
 
         private void HealthCheck()

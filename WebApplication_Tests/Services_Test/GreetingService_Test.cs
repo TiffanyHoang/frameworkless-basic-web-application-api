@@ -19,7 +19,7 @@ namespace WebApplication_Tests
             dataRow["name"] = "Tiffany";
             dataTable.Rows.Add(dataRow);
             var query = "SELECT name from people";
-            var database = Mock.Of<IDatabase> (x => x.ExecuteQuery(query) == dataTable);
+            var database = Mock.Of<IDatabase>(x => x.ExecuteQuery(query) == dataTable);
             var repository = new Repository(database);
 
             _greetingService = new GreetingService(repository);

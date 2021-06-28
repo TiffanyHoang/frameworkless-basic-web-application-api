@@ -9,7 +9,7 @@ namespace WebApplication.RequestHandlers
     {
         public static bool ValidateAuthentication(IRequest request)
         {
-            var headers = request.Headers;   
+            var headers = request.Headers;
             if (headers == null)
             {
                 return false;

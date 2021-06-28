@@ -38,7 +38,7 @@ namespace WebApplication_Tests
             var request = Mock.Of<IRequest>(r => r.Headers == headers);
             var actual = Authentication.ValidateAuthentication(request);
             Assert.False(actual);
-        }   
+        }
     }
 
 }

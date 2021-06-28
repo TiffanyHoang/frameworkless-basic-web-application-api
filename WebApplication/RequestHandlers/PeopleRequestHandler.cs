@@ -22,13 +22,13 @@ namespace WebApplication.RequestHandlers
         {
             _request = context.Request;
             _response = context.Response;
-        
+
             if (!Authentication.ValidateAuthentication(_request))
             {
                 _response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 return;
             }
-            
+
             switch (_request.HttpMethod)
             {
                 case "GET":
@@ -62,9 +62,9 @@ namespace WebApplication.RequestHandlers
             {
                 var personJson = reader.ReadToEnd();
                 var person = JsonSerializer.Deserialize<Person>(personJson);
-            
+
                 var result = _peopleService.CreatePerson(person);
-                
+
                 if (result.statusCode == (int)HttpStatusCode.Conflict)
                 {
                     _response.StatusCode = result.statusCode;

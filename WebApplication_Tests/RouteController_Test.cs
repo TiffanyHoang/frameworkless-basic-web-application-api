@@ -17,7 +17,7 @@ namespace WebApplication_Tests
         public RouteController_Test()
         {
             _peopleService = Mock.Of<IPeopleService>();
-            _greetingService = Mock.Of<IGreetingService>(); 
+            _greetingService = Mock.Of<IGreetingService>();
 
         }
         [Fact]
@@ -30,10 +30,10 @@ namespace WebApplication_Tests
             var greetingRequestHandler = new Mock<IRequestHandler>();
 
             IRequestHandler peopleRequestHandler = new PeopleRequestHandler(_peopleService);
-            
+
             IRequestHandler healthCheckHandler = new HealthCheckHandler();
 
-            RouteController routeController = new RouteController( greetingRequestHandler.Object, peopleRequestHandler, healthCheckHandler);
+            RouteController routeController = new RouteController(greetingRequestHandler.Object, peopleRequestHandler, healthCheckHandler);
 
             routeController.RequestRouter(context);
 
@@ -50,7 +50,7 @@ namespace WebApplication_Tests
             IRequestHandler greetingRequestHandler = new GreetingRequestHandler(_greetingService);
 
             var peopleRequestHandler = new Mock<IRequestHandler>();
-            
+
             IRequestHandler healthCheckHandler = new HealthCheckHandler();
 
             RouteController routeController = new RouteController(greetingRequestHandler, peopleRequestHandler.Object, healthCheckHandler);

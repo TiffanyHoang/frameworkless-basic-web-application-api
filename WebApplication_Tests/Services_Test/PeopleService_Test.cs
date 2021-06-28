@@ -21,7 +21,7 @@ namespace WebApplication_Tests
             dataRow["name"] = "Tiffany";
             _dataTable.Rows.Add(dataRow);
             var query = "SELECT name from people";
-            var database = Mock.Of<IDatabase> (x => x.ExecuteQuery(query) == _dataTable);
+            var database = Mock.Of<IDatabase>(x => x.ExecuteQuery(query) == _dataTable);
             var repository = new Repository(database);
 
             _peopleService = new PeopleService(repository);
@@ -107,7 +107,7 @@ namespace WebApplication_Tests
 
             var expectedReturnResult = ((int)HttpStatusCode.OK);
 
-            var actualReturnResult= _peopleService.DeletePerson(new Person("DS"));
+            var actualReturnResult = _peopleService.DeletePerson(new Person("DS"));
 
             Assert.Equal(expectedReturnResult, actualReturnResult);
         }
@@ -119,7 +119,7 @@ namespace WebApplication_Tests
 
             var expectedReturnResult = ((int)HttpStatusCode.NotFound);
 
-            var actualReturnResult= _peopleService.DeletePerson(person);
+            var actualReturnResult = _peopleService.DeletePerson(person);
 
             Assert.Equal(expectedReturnResult, actualReturnResult);
         }
@@ -131,7 +131,7 @@ namespace WebApplication_Tests
 
             var expectedReturnResult = ((int)HttpStatusCode.Forbidden);
 
-            var actualReturnResult= _peopleService.DeletePerson(person);
+            var actualReturnResult = _peopleService.DeletePerson(person);
 
             Assert.Equal(expectedReturnResult, actualReturnResult);
         }

@@ -11,7 +11,7 @@ namespace WebApplication.Repositories
         {
             _database = database;
         }
-        
+
         public List<Person> GetPeopleList()
         {
             var query = "SELECT name from people";
@@ -20,7 +20,7 @@ namespace WebApplication.Repositories
             return GetPeopleListFromRowData(peopleData);
         }
 
-        public void AddPerson(Person person) 
+        public void AddPerson(Person person)
         {
             var query = $"INSERT INTO people (name) VALUES('{person.Name}');";
             var dataTable = _database.ExecuteQuery(query);
@@ -29,7 +29,7 @@ namespace WebApplication.Repositories
         {
             var query = $"DELETE FROM people WHERE name='{person.Name}';";
             var dataTable = _database.ExecuteQuery(query);
-        } 
+        }
         public void UpdatePerson(Person person, Person updatedPerson)
         {
             var query = $"UPDATE people SET name='{updatedPerson.Name}' WHERE name='{person.Name}';";

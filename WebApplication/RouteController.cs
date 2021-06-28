@@ -33,7 +33,7 @@ namespace WebApplication
                 _greetingRequestHandler.HandleRequest(context);
                 return;
             }
-            
+
             if (peoplePath.IsMatch(path))
             {
                 _peopleRequestHandler.HandleRequest(context);

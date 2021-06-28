@@ -37,7 +37,7 @@ namespace WebApplication_Tests
                                     {
                                         new Person("Tiffany")
                                     };
-           
+
             _peopleService.Setup(s => s.GetPeopleList()).Returns(peopleList);
 
             _peopleRequestHandler.HandleRequest(context);
@@ -81,7 +81,7 @@ namespace WebApplication_Tests
         {
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "POST" &&
-                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) && r.ContentEncoding == Encoding.UTF8  &&
+                r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) && r.ContentEncoding == Encoding.UTF8 &&
                 r.Headers == _headers
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
@@ -110,7 +110,7 @@ namespace WebApplication_Tests
             var oldPerson = new Person("DS");
             var person = new Person("DSTeoh");
 
-            _peopleService.Setup(s => s.UpdatePerson(person,oldPerson)).Returns(((int)HttpStatusCode.OK, person));
+            _peopleService.Setup(s => s.UpdatePerson(person, oldPerson)).Returns(((int)HttpStatusCode.OK, person));
 
             _peopleRequestHandler.HandleRequest(context);
 
@@ -152,11 +152,11 @@ namespace WebApplication_Tests
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
-            
+
             var person = new Person("Tiffany");
             var oldPerson = new Person("Tiff");
 
-            _peopleService.Setup(s => s.UpdatePerson(person,oldPerson)).Returns(((int)HttpStatusCode.Forbidden, null));
+            _peopleService.Setup(s => s.UpdatePerson(person, oldPerson)).Returns(((int)HttpStatusCode.Forbidden, null));
 
             _peopleRequestHandler.HandleRequest(context);
 
@@ -166,7 +166,7 @@ namespace WebApplication_Tests
         [Fact]
         public void HandleUpdatePerson_OldNameIsNotExisted_RespondNotFoundStatus()
         {
-           
+
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DSTeoh\"}")) &&
@@ -180,7 +180,7 @@ namespace WebApplication_Tests
             var person = new Person("DSTeoh");
             var oldPerson = new Person("DS");
 
-            _peopleService.Setup(s => s.UpdatePerson(person,oldPerson)).Returns(((int)HttpStatusCode.NotFound, null));
+            _peopleService.Setup(s => s.UpdatePerson(person, oldPerson)).Returns(((int)HttpStatusCode.NotFound, null));
 
             _peopleRequestHandler.HandleRequest(context);
 
@@ -197,7 +197,7 @@ namespace WebApplication_Tests
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
-            
+
             var person = new Person("Mattias");
 
             _peopleService.Setup(s => s.DeletePerson(person)).Returns(((int)HttpStatusCode.OK));
@@ -259,7 +259,7 @@ namespace WebApplication_Tests
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
             _peopleRequestHandler.HandleRequest(context);
-            
+
             Assert.Equal((int)HttpStatusCode.MethodNotAllowed, response.StatusCode);
         }
         [Fact]
@@ -270,7 +270,7 @@ namespace WebApplication_Tests
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
             _peopleRequestHandler.HandleRequest(context);
-            
+
             Assert.Equal((int)HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }
