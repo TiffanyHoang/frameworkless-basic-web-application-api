@@ -1,6 +1,5 @@
 #!/usr/bin/env bash 
 set -eou pipefail
-set -o xtrace
 echo '--- :docker: Build app image'
 VERSION=$(git describe --tags --always) 
 ECRACC='274387265859.dkr.ecr.ap-southeast-2.amazonaws.com'

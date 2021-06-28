@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -eou pipefail
-set -o xtrace
 echo '--- :kubernetes: Deploy on Jupiter'
 GITHASH=$(git describe --tags --always)
 NAME=tiffany-app
