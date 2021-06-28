@@ -19,4 +19,5 @@ docker build \
   --build-arg PROJECT_NAME="$PROJECT_NAME" \
   --build-arg TOKEN="$TOKEN" \
   --build-arg SOLUTION_FILE="$SOLUTION_FILE" \
+  --build-arg BRANCH="$BUILDKITE_BRANCH" \
   .

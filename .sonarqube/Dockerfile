@@ -5,6 +5,7 @@ ARG PROJECT_KEY
 ARG PROJECT_NAME
 ARG TOKEN
 ARG SOLUTION_FILE
+ARG BRANCH
 
 COPY . ./
 
@@ -28,6 +29,7 @@ RUN dotnet sonarscanner begin \
     /n:"$PROJECT_NAME" \
     /d:sonar.host.url="$HOST_URL" \
     /d:sonar.login="$TOKEN" \
+    /d:sonar.branch.name="$BRANCH" \
     /d:sonar.cs.opencover.reportsPaths=coverage.opencover.xml
 
 

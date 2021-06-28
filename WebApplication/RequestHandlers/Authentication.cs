@@ -24,7 +24,7 @@ namespace WebApplication.RequestHandlers
             var secret = Environment.GetEnvironmentVariable("SECRET");
             string[] values = headers.GetValues("Authorization");
             var isAuthorizationValueCorrect = values[0].ToString() == "Basic " + secret;
-            return isAuthorizationKeyAdded && isAuthorizationValueCorrect;
+            return isAuthorizationValueCorrect;
         }
     }
 }
