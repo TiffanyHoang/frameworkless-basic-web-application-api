@@ -5,7 +5,6 @@ using WebApplication.RequestHandlers;
 using System.IO;
 using Moq;
 using System.Text;
-using WebApplication.Repositories;
 using WebApplication.Http;
 using WebApplication.Services;
 using System.Collections.Specialized;
@@ -15,15 +14,14 @@ namespace WebApplication_Tests
     public class GreetingRequestHandler_Test
     {
 
-        private GreetingService _greetingService;
+        private Mock<IGreetingService> _greetingService;
         private readonly GreetingRequestHandler _greetingRequestHandler;
         private readonly NameValueCollection _headers;
         public GreetingRequestHandler_Test()
         {
             var secret = Environment.GetEnvironmentVariable("SECRET");
-            var repository = new Repository();
-            _greetingService = new GreetingService(repository);
-            _greetingRequestHandler = new GreetingRequestHandler(_greetingService);
+            _greetingService = new Mock<IGreetingService>();
+            _greetingRequestHandler = new GreetingRequestHandler(_greetingService.Object);
             _headers = new NameValueCollection();
             _headers.Add("Authorization", "Basic " + secret );
         }
@@ -35,11 +33,14 @@ namespace WebApplication_Tests
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
-            _greetingRequestHandler.HandleRequest(context);
-
             var time = DateTime.Now.ToUniversalTime().ToString("HH:mm");
             var date = DateTime.Now.ToUniversalTime().ToString("dd MMM yyyy");
             var expectedResponse = $"Hello Tiffany - The time on the server is {time} on {date}";
+
+                        
+            _greetingService.Setup(s => s.Greeting()).Returns(expectedResponse);
+
+            _greetingRequestHandler.HandleRequest(context);
 
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
 
@@ -75,5 +76,4 @@ namespace WebApplication_Tests
             Assert.Equal((int)HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }
-
 }

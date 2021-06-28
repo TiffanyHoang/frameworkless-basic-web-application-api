@@ -1,0 +1,8 @@
+apiVersion: postgres.myob.com/v1
+kind: Database
+metadata:
+  name: tiffany-app-db
+  namespace: fma
+spec:
+  instanceClass: "db.t2.small"
+  storage: 20

@@ -17,14 +17,15 @@ namespace WebApplication
         {
             _listener = new HttpListener();
             _listener.Prefixes.Add($"http://*:{port}/");
+            
+            var database = new Database();
+            Repository repository = new Repository(database);
 
-            Repository repository = new Repository();
-
-            GreetingService greetingService = new GreetingService(repository);
+            IGreetingService greetingService = new GreetingService(repository);
 
             IRequestHandler greetingRequestHandler = new GreetingRequestHandler(greetingService);
             
-            PeopleService peopleService = new PeopleService(repository);
+            IPeopleService peopleService = new PeopleService(repository);
 
             IRequestHandler peopleRequestHandler = new PeopleRequestHandler(peopleService);
 

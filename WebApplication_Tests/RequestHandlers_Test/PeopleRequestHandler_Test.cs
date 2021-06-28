@@ -8,22 +8,20 @@ using Moq;
 using System.Text;
 using WebApplication.Http;
 using WebApplication.Services;
-using WebApplication.Repositories;
 using System.Collections.Specialized;
-
+using System.Collections.Generic;
 namespace WebApplication_Tests
 {
     public class PeopleRequestHandler_Test
     {
-        private PeopleService _peopleService;
         private readonly PeopleRequestHandler _peopleRequestHandler;
+        private readonly Mock<IPeopleService> _peopleService;
         private readonly NameValueCollection _headers;
         public PeopleRequestHandler_Test()
         {
             var secret = Environment.GetEnvironmentVariable("SECRET");
-            var repository = new Repository();
-            _peopleService = new PeopleService(repository);
-            _peopleRequestHandler = new PeopleRequestHandler(_peopleService);
+            _peopleService = new Mock<IPeopleService>();
+            _peopleRequestHandler = new PeopleRequestHandler(_peopleService.Object);
             _headers = new NameValueCollection();
             _headers.Add("Authorization", "Basic " + secret);
         }
@@ -35,6 +33,12 @@ namespace WebApplication_Tests
                 r.Headers == _headers);
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+            List<Person> peopleList = new List<Person>()
+                                    {
+                                        new Person("Tiffany")
+                                    };
+           
+            _peopleService.Setup(s => s.GetPeopleList()).Returns(peopleList);
 
             _peopleRequestHandler.HandleRequest(context);
 
@@ -58,6 +62,10 @@ namespace WebApplication_Tests
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
+            var person = new Person("DS");
+
+            _peopleService.Setup(s => s.CreatePerson(person)).Returns(((int)HttpStatusCode.OK, person));
+
             _peopleRequestHandler.HandleRequest(context);
 
             Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
@@ -79,6 +87,9 @@ namespace WebApplication_Tests
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
+            var person = new Person("Tiffany");
+            _peopleService.Setup(s => s.CreatePerson(person)).Returns(((int)HttpStatusCode.Conflict, null));
+
             _peopleRequestHandler.HandleRequest(context);
 
             Assert.Equal((int)HttpStatusCode.Conflict, response.StatusCode);
@@ -87,7 +98,6 @@ namespace WebApplication_Tests
         [Fact]
         public void HandleUpdatePerson_RespondOKStatusAndUpdatedPersonInJsonFormat()
         {
-            _peopleService.CreatePerson(new Person("DS"));
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"DSTeoh\"}")) &&
@@ -96,6 +106,11 @@ namespace WebApplication_Tests
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+
+            var oldPerson = new Person("DS");
+            var person = new Person("DSTeoh");
+
+            _peopleService.Setup(s => s.UpdatePerson(person,oldPerson)).Returns(((int)HttpStatusCode.OK, person));
 
             _peopleRequestHandler.HandleRequest(context);
 
@@ -128,7 +143,6 @@ namespace WebApplication_Tests
         [Fact]
         public void HandleUpdatePerson_UpdatedNameSameAsDefaultPersonName_RespondForbiddenStatus()
         {
-            _peopleService.CreatePerson(new Person("Tiff"));
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&
                 r.InputStream == new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"Tiffany\"}")) &&
@@ -138,6 +152,11 @@ namespace WebApplication_Tests
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+            
+            var person = new Person("Tiffany");
+            var oldPerson = new Person("Tiff");
+
+            _peopleService.Setup(s => s.UpdatePerson(person,oldPerson)).Returns(((int)HttpStatusCode.Forbidden, null));
 
             _peopleRequestHandler.HandleRequest(context);
 
@@ -158,6 +177,11 @@ namespace WebApplication_Tests
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
+            var person = new Person("DSTeoh");
+            var oldPerson = new Person("DS");
+
+            _peopleService.Setup(s => s.UpdatePerson(person,oldPerson)).Returns(((int)HttpStatusCode.NotFound, null));
+
             _peopleRequestHandler.HandleRequest(context);
 
             Assert.Equal((int)HttpStatusCode.NotFound, response.StatusCode);
@@ -166,7 +190,6 @@ namespace WebApplication_Tests
         [Fact]
         public void HandleDeletePerson_RespondOKStatus()
         {
-            _peopleService.CreatePerson(new Person("Mattias"));
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "DELETE" &&
                 r.Url == new Uri("/people/Mattias") &&
@@ -174,6 +197,10 @@ namespace WebApplication_Tests
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+            
+            var person = new Person("Mattias");
+
+            _peopleService.Setup(s => s.DeletePerson(person)).Returns(((int)HttpStatusCode.OK));
 
             _peopleRequestHandler.HandleRequest(context);
 
@@ -191,6 +218,10 @@ namespace WebApplication_Tests
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
+            var person = new Person("Mattias");
+
+            _peopleService.Setup(s => s.DeletePerson(person)).Returns((int)HttpStatusCode.NotFound);
+
             _peopleRequestHandler.HandleRequest(context);
 
             Assert.Equal((int)HttpStatusCode.NotFound, response.StatusCode);
@@ -206,6 +237,10 @@ namespace WebApplication_Tests
                 );
             var response = Mock.Of<IResponse>(r => r.OutputStream == new MemoryStream());
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
+
+            var person = new Person("Tiffany");
+
+            _peopleService.Setup(s => s.DeletePerson(person)).Returns((int)HttpStatusCode.Forbidden);
 
             _peopleRequestHandler.HandleRequest(context);
 
@@ -224,6 +259,7 @@ namespace WebApplication_Tests
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
             _peopleRequestHandler.HandleRequest(context);
+            
             Assert.Equal((int)HttpStatusCode.MethodNotAllowed, response.StatusCode);
         }
         [Fact]
@@ -234,7 +270,7 @@ namespace WebApplication_Tests
             var context = Mock.Of<IContext>(c => c.Request == request && c.Response == response);
 
             _peopleRequestHandler.HandleRequest(context);
-
+            
             Assert.Equal((int)HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }

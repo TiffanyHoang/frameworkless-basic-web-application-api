@@ -7,7 +7,7 @@ using Serilog;
 
 namespace WebApplication.Services
 {
-    public class PeopleService
+    public class PeopleService:IPeopleService
     {
         private readonly Repository _repository;
         public PeopleService(Repository repository)

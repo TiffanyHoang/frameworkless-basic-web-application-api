@@ -29,6 +29,31 @@ objects:
               env:
                 - name: SECRET
                   value: $(secret)
+                - name: DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: $(dbName)
+                      key: DB_HOST
+                - name: DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: $(dbName)
+                      key: DB_USER
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: $(dbName)
+                      key: DB_PASSWORD
+                - name: DB_PORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: $(dbName)
+                      key: DB_PORT
+                - name: DB_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: $(dbName)
+                      key: DB_NAME
               ports:
                 - containerPort: 8080
 
@@ -41,13 +66,7 @@ objects:
         app: $(name)
       annotations:
         kubernetes.io/tls-acme: "true"
-        nginx.ingress.kubernetes.io/affinity: "cookie"
-        nginx.ingress.kubernetes.io/affinity-mode: "persistent"
-        nginx.ingress.kubernetes.io/session-cookie-name: "route"
-        nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
-        nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
-        nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
-        nginx.ingress.kubernetes.io/whitelist-source-range: 59.100.228.148/30,165.228.249.3/32,49.255.232.68/30,203.34.100.0/24,14.203.189.208/30,210.10.213.48/30,111.69.34.208/28,202.50.111.5/32,111.69.51.32/28,202.50.111.0/24,202.56.51.146/32,210.10.223.248/30,49.255.235.66/31,49.255.41.116/30,203.20.70.0/24,124.254.104.108/30,14.203.6.232/30,202.77.54.80/29,3.105.52.160/32,13.210.196.83/32
+        whitelist-source-range: 59.100.228.148/30,165.228.249.3/32,49.255.232.68/30,203.34.100.0/24,14.203.189.208/30,210.10.213.48/30,111.69.34.208/28,202.50.111.5/32,111.69.51.32/28,202.50.111.0/24,202.56.51.146/32,210.10.223.248/30,49.255.235.66/31,49.255.41.116/30,203.20.70.0/24,124.254.104.108/30,14.203.6.232/30,202.77.54.80/29,3.105.52.160/32,13.210.196.83/32
     spec:
       tls:
         - hosts:
@@ -91,5 +110,9 @@ parameters:
     parameterType: string
   - name: "secret"
     description: "authentication secret"
+    required: true
+    parameterType: string
+  - name: "dbName"
+    description: "database name"
     required: true
     parameterType: string

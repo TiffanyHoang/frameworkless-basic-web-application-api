@@ -4,18 +4,27 @@ using WebApplication;
 using System.Collections.Generic;
 using WebApplication.Services;
 using WebApplication.Repositories;
+using Moq;
+using System.Data;
 
 namespace WebApplication_Tests
 {
     public class PeopleService_Test
     {
-        private Repository _repository;
-        private PeopleService _peopleService;
-
+        private readonly PeopleService _peopleService;
+        private readonly DataTable _dataTable;
         public PeopleService_Test()
         {
-            _repository = new Repository();
-            _peopleService = new PeopleService(_repository);
+            _dataTable = new DataTable();
+            _dataTable.Columns.Add("name", typeof(string));
+            DataRow dataRow = _dataTable.NewRow();
+            dataRow["name"] = "Tiffany";
+            _dataTable.Rows.Add(dataRow);
+            var query = "SELECT name from people";
+            var database = Mock.Of<IDatabase> (x => x.ExecuteQuery(query) == _dataTable);
+            var repository = new Repository(database);
+
+            _peopleService = new PeopleService(repository);
         }
 
         [Fact]
@@ -27,21 +36,13 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void CreatePerson_ShouldAddNewPersonToRepoAndReturnOKStatusAndNewPerson()
+        public void CreatePerson_ReturnOKStatusAndNewPerson()
         {
             Person person = new Person("DS");
             var actualReturnResult = _peopleService.CreatePerson(person);
 
             var expectedReturnResult = ((int)HttpStatusCode.OK, new Person("DS"));
 
-            var actualPeopleList = _peopleService.GetPeopleList();
-
-            var expectedPeopleList = new List<Person> {
-                new Person("Tiffany"),
-                new Person("DS")
-            };
-
-            Assert.Equal(expectedPeopleList, actualPeopleList);
             Assert.Equal(expectedReturnResult, actualReturnResult);
         }
 
@@ -57,24 +58,17 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void UpdatePerson_ShouldUpdatePersonInRepoAndReturnOKStatusAndNewPerson()
+        public void UpdatePerson_ReturnOKStatusAndNewPerson()
         {
-            Person person = new Person("DS");
-            _peopleService.CreatePerson(person);
+            DataRow dataRow = _dataTable.NewRow();
+            dataRow["name"] = "DS";
+            _dataTable.Rows.Add(dataRow);
 
             Person updatePerson = new Person("DSTeoh");
-            var actualReturnResult = _peopleService.UpdatePerson(updatePerson, person);
+            var actualReturnResult = _peopleService.UpdatePerson(updatePerson, new Person("DS"));
 
             var expectedReturnResult = ((int)HttpStatusCode.OK, new Person("DSTeoh"));
 
-            var actualPeopleList = _peopleService.GetPeopleList();
-
-            var expectedPeopleList = new List<Person> {
-                new Person("Tiffany"),
-                new Person("DSTeoh")
-            };
-
-            Assert.Equal(expectedPeopleList, actualPeopleList);
             Assert.Equal(expectedReturnResult, actualReturnResult);
         }
 
@@ -105,22 +99,15 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void DeletePerson_ShouldDeletePersonInRepoAndReturnOKStatus()
+        public void DeletePerson_ReturnOKStatus()
         {
-            Person person = new Person("DS");
-            _peopleService.CreatePerson(person);
+            DataRow dataRow = _dataTable.NewRow();
+            dataRow["name"] = "DS";
+            _dataTable.Rows.Add(dataRow);
 
             var expectedReturnResult = ((int)HttpStatusCode.OK);
 
-            var actualReturnResult= _peopleService.DeletePerson(person);
-
-            var actualPeopleList = _peopleService.GetPeopleList();
-
-            var expectedPeopleList = new List<Person> {
-                new Person("Tiffany")
-            };
-
-            Assert.Equal(expectedPeopleList, actualPeopleList);
+            var actualReturnResult= _peopleService.DeletePerson(new Person("DS"));
 
             Assert.Equal(expectedReturnResult, actualReturnResult);
         }

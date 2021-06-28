@@ -12,8 +12,8 @@ namespace WebApplication.RequestHandlers
     {
         private IRequest _request;
         private IResponse _response;
-        private readonly PeopleService _peopleService;
-        public PeopleRequestHandler(PeopleService peopleService)
+        private readonly IPeopleService _peopleService;
+        public PeopleRequestHandler(IPeopleService peopleService)
         {
             _peopleService = peopleService;
         }

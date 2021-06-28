@@ -8,9 +8,9 @@ namespace WebApplication.RequestHandlers
     public class GreetingRequestHandler : IRequestHandler
     {
         private IResponse _response;
-        private readonly GreetingService _greetingService;
+        private readonly IGreetingService _greetingService;
 
-        public GreetingRequestHandler(GreetingService greetingService)
+        public GreetingRequestHandler(IGreetingService greetingService)
         {
             _greetingService = greetingService;
         }

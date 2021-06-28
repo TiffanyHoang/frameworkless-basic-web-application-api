@@ -1,23 +1,49 @@
 using System.Collections.Generic;
+using System.Data;
 
 namespace WebApplication.Repositories
 {
     public class Repository
     {
-        private readonly List<Person> _peopleList;
         public string defaultPersonName = "Tiffany";
-        public Repository()
+        private readonly IDatabase _database;
+        public Repository(IDatabase database)
         {
-            _peopleList = new List<Person>();
-            _peopleList.Add(new Person (defaultPersonName));
+            _database = database;
         }
-        public List<Person> GetPeopleList() => _peopleList;
-        public void AddPerson(Person person) => _peopleList.Add(person);
-        public void DeletePerson(Person person) => _peopleList.Remove(person);
+        
+        public List<Person> GetPeopleList()
+        {
+            var query = "SELECT name from people";
+            var dataTable = _database.ExecuteQuery(query);
+            var peopleData = dataTable.Rows;
+            return GetPeopleListFromRowData(peopleData);
+        }
+
+        public void AddPerson(Person person) 
+        {
+            var query = $"INSERT INTO people (name) VALUES('{person.Name}');";
+            var dataTable = _database.ExecuteQuery(query);
+        }
+        public void DeletePerson(Person person)
+        {
+            var query = $"DELETE FROM people WHERE name='{person.Name}';";
+            var dataTable = _database.ExecuteQuery(query);
+        } 
         public void UpdatePerson(Person person, Person updatedPerson)
         {
-            var existingPerson = _peopleList.Find(p => p.Name == person.Name);
-            existingPerson.Name = updatedPerson.Name;
+            var query = $"UPDATE people SET name='{updatedPerson.Name}' WHERE name='{person.Name}';";
+            var dataTable = _database.ExecuteQuery(query);
+        }
+
+        private List<Person> GetPeopleListFromRowData(DataRowCollection peopleData)
+        {
+            var peopleList = new List<Person>();
+            foreach (DataRow personData in peopleData)
+            {
+                peopleList.Add(new Person(personData.Field<string>("name")));
+            }
+            return peopleList;
         }
     }
 }

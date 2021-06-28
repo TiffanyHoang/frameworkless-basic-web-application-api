@@ -1,4 +1,4 @@
-docker build -f Dockerfile.Test -t test .
+docker build -f ./ops/docker/Dockerfile.Test -t test .
 
 docker build -t app ..
 

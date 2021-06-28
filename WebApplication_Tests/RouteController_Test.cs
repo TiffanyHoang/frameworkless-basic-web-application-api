@@ -3,7 +3,6 @@ using WebApplication.RequestHandlers;
 using WebApplication;
 using System.IO;
 using Moq;
-using WebApplication.Repositories;
 using System;
 using System.Net;
 using WebApplication.Http;
@@ -13,14 +12,12 @@ namespace WebApplication_Tests
 {
     public class RouteController_Test
     {
-        private PeopleService _peopleService;
-        private GreetingService _greetingService;
-
+        private readonly IPeopleService _peopleService;
+        private IGreetingService _greetingService;
         public RouteController_Test()
         {
-            var repository = new Repository();
-            _peopleService = new PeopleService(repository);
-            _greetingService = new GreetingService(repository);
+            _peopleService = Mock.Of<IPeopleService>();
+            _greetingService = Mock.Of<IGreetingService>(); 
 
         }
         [Fact]

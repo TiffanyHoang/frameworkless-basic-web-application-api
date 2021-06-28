@@ -1,5 +1,5 @@
 steps:
-  - label: ':checkered_flag: Run Unit Tests'
+  - label: ':checkered_flag: Run unit tests'
     command: ./ops/bin/unit-tests.sh
     agents:
       queue: fma-dev
@@ -8,7 +8,7 @@ steps:
     command: ./.sonarqube/scan.sh
     agents:
       queue: fma-dev
-
+  
   - wait
 
   - label: ':gear: Prepare repo in ECR'
@@ -31,27 +31,12 @@ steps:
 
   - wait 
 
-  - label: ':rocket: Deploy to Jupiter DEV'
-    command: ./ops/bin/jupiter-deploy.sh dev
-    agents:
-      queue: europa-preprod-fma
-
-  - wait 
-  
-  - label: ':crossed_fingers: End to End Tests'
-    key: end-to-end-test
-    command: ./ops/bin/jupiter-e2e-tests.sh
+  - label: ':checkered_flag: Run server test'
+    command: ./ops/bin/server-test.sh
     agents:
       queue: fma-dev
   
   - wait 
-  
-  - label: ':hand: Delete test service in Jupiter DEV'
-    command: ./ops/bin/jupiter-delete-service-dev.sh
-    depends_on: end-to-end-test
-    allow_dependency_failure: true
-    agents:
-      queue: europa-preprod-fma
 
   - label: ':rocket: Deploy to Jupiter PROD'
     branches: main

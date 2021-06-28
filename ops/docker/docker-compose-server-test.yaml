@@ -1,0 +1,30 @@
+version: "3.3"
+services:
+    app:
+        image: $appImage
+        networks:
+            - test-network
+    database:
+        build:
+            context: .
+            dockerfile: Dockerfile.testdb
+        networks:
+            - test-network
+    test:
+        build:
+            context: ../..
+            dockerfile: ./ops/docker/Dockerfile.test
+        command: ["Server_Tests"]
+        environment: 
+            - SECRET="secret"
+            - DB_HOST="database"
+            - DB_PORT="5432"
+            - DB_NAME="postgres"
+            - DB_USER="postgres"
+            - DB_PASSWORD="docker"
+        depends_on: 
+            - database
+        networks:
+            - test-network
+networks: 
+    test-network:
