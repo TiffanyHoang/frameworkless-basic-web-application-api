@@ -50,16 +50,5 @@ namespace WebApplication
         {
             _listener.Close();
         }
-
-        public void ProcessRequest()
-        {
-            var listenerContext = _listener.GetContext();
-            Task.Run(() =>
-            {
-                var context = new Context(listenerContext);
-                _routeController.RequestRouter(context);
-                context.Close();
-            });
-        }
     }
 }

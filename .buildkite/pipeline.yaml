@@ -55,3 +55,7 @@ steps:
       - ./ops/bin/jupiter-smoke-test.sh
     agents:
       queue: fma-dev
+
+notify:
+  - email: "tiffany.hoang@myob.com"
+    if: build.state == "failed"

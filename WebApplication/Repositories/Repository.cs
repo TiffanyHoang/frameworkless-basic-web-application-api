@@ -23,20 +23,20 @@ namespace WebApplication.Repositories
         public void AddPerson(Person person)
         {
             var query = $"INSERT INTO people (name) VALUES('{person.Name}');";
-            var dataTable = _database.ExecuteQuery(query);
+            _database.ExecuteQuery(query);
         }
         public void DeletePerson(Person person)
         {
             var query = $"DELETE FROM people WHERE name='{person.Name}';";
-            var dataTable = _database.ExecuteQuery(query);
+            _database.ExecuteQuery(query);
         }
         public void UpdatePerson(Person person, Person updatedPerson)
         {
             var query = $"UPDATE people SET name='{updatedPerson.Name}' WHERE name='{person.Name}';";
-            var dataTable = _database.ExecuteQuery(query);
+            _database.ExecuteQuery(query);
         }
 
-        private List<Person> GetPeopleListFromRowData(DataRowCollection peopleData)
+        private static List<Person> GetPeopleListFromRowData(DataRowCollection peopleData)
         {
             var peopleList = new List<Person>();
             foreach (DataRow personData in peopleData)

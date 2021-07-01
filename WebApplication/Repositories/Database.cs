@@ -7,20 +7,14 @@ namespace WebApplication.Repositories
     public class Database : IDatabase
     {
         private readonly string _connectionString;
-        private readonly string _dbHost;
-        private readonly string _dbPort;
-        private readonly string _dbName;
-        private readonly string _dbUser;
-        private readonly string _dbPassword;
-
         public Database()
         {
-            _dbHost = Environment.GetEnvironmentVariable("DB_HOST");
-            _dbPort = Environment.GetEnvironmentVariable("DB_PORT");
-            _dbName = Environment.GetEnvironmentVariable("DB_NAME");
-            _dbUser = Environment.GetEnvironmentVariable("DB_USER");
-            _dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
-            _connectionString = $"Host={_dbHost};Port={_dbPort};Database={_dbName};Username={_dbUser};Password={_dbPassword};";
+            var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+            var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
+            var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+            var dbUser = Environment.GetEnvironmentVariable("DB_USER");
+            var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+            _connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPassword};";
         }
         public DataTable ExecuteQuery(string query)
         {

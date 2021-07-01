@@ -1,137 +1,142 @@
 # Frameworkless Web Application Kata
+
 [![Build status](https://badge.buildkite.com/b0a10dcf62e33205414b931216c9b6914b59fe3e2d867155ab.svg)](https://buildkite.com/myob/tiffany-frameworkless-web-app-api)
 
 A .NET Core solution to [the Frameworkless Basic Web Application kata](https://github.com/MYOB-Technology/General_Developer/blob/main/katas/kata-frameworkless-basic-web-application/kata-frameworkless-basic-web-application.md) with [enhancements](https://github.com/MYOB-Technology/General_Developer/blob/main/katas/kata-frameworkless-basic-web-application/kata-frameworkless-basic-web-application-enhancements.md).
 
-## Endpoints
-[https://tiffany-prod.fma.lab.myobdev.com](https://tiffany-prod.fma.lab.myobdev.com)   
-These are the supported endpoints along with example responses. Use your favourite HTTP client, such as Postman or REST client, to make requests!   
+* * *
 
-## GET / 
-Return greeting message   
-Request   
-``GET /``  
-Respond  
-~~~
-HTTP/1.1 200 OK
-Server: Microsoft-NetCore/2.0
-Date: Tue, 06 Apr 2021 00:05:40 GMT
-Content-Length: 62
-Connection: close
+# How to use the app
 
+## Access
+
+-   The aplication is accessible under MYOB VPN. 
+-   Please make sure request with Authorization header:  
+    `Authorization: Basic <credentials>`  
+-   In order to get the `<credentials>`, you have to have permission to log in to either: 
+    -   europa-preprod in kubenetes then in cli run  `kubectl get secret/tiffany-app-secret -n fma --template={{.data.value}}` or 
+    -   account adfs-fma-dev-admin in aws then in cli run `aws ssm get-parameter --name "tiffany-app-secret" --query Parameter.Value --with-decryption --output text --region ap-southeast-2` or  
+    -   please contact tiffany.hoang@myob.com to get the `<credentials>`
+
+## APIs
+
+1.  `GET /` - greeting with all names & the current date/time of the server. [Example](#get-)
+2.  `GET /people` - gets all names in Json format. [Example](#get-people)
+3.  `POST /people` - add new name.[Example](#post-people)
+4.  `PUT /people/{existing-name}` - update existing name. [Example](#put-peopleexisting-name)
+5.  `DELETE /people/{existing-name}` - delete existing name. [Example](#delete-peopleexisting-name)
+
+ **Default name** is **Tiffany** which is not allowed to be updated or deleted.
+
+## Examples:
+
+### GET /
+```
+curl --request GET \
+  --url https://tiffany-app.svc.platform.myobdev.com \
+  --header 'Authorization: Basic <credentials>' 
+```
+```
 Hello Tiffany - the time on the server is 10:05 on 06 Apr 2021
-~~~
-
-## GET /people
-Get all people in the data   
-Request  
-``GET /people``  
-Respond  
-~~~
-HTTP/1.1 200 OK
-Server: Microsoft-NetCore/2.0
-Date: Tue, 06 Apr 2021 00:09:26 GMT
-Content-Length: 33
-Connection: close
-
-[
-  {
-    "Name": "Tiffany"
-  }
-]
-~~~
-
-## POST /people
-Create a new person in body content    
-Request  
-``POST /people``  
-Raw body content  
-``
-{
-    "Name":"DS"
+```
+### GET /people
+```
+curl --request GET \
+  --url https://tiffany-app.svc.platform.myobdev.com/people \
+  --header 'Authorization: Basic <credentials>' 
+```
+```
+[  
+  {  
+    "Name": "Tiffany"  
+  }  
+]  
+```
+### POST /people
+```
+curl --request POST \
+  --url https://tiffany-app.svc.platform.myobdev.com/people \
+  --header 'authorization: Basic <credentials>' \
+  --data '{"Name":"DS"}' 
+```
+```
+{   
+  "Name": "DS"  
 }  
-``  
-Respond  
-~~~
-HTTP/1.1 200 OK
-Server: Microsoft-NetCore/2.0
-Date: Tue, 06 Apr 2021 00:17:30 GMT
-Content-Length: 18
-Connection: close
-
-{
-  "Name": "DS"
+```
+### PUT /people/{existing-name}
+```
+curl --request PUT \
+  --url https://tiffany-app.svc.platform.myobdev.com/people/DS \
+  --header 'authorization: Basic <credentials>' \
+  --data '{"Name":"DSTeoh"}'
+``` 
+``` 
+{   
+  "Name": "DSTeoh"  
 }
-~~~
+```
+### DELETE /people/{existing-name}
+```
+curl --request DELETE \
+  --url https://tiffany-app.svc.platform.myobdev.com/people/DSTeoh \
+  --header 'authorization: Basic <credentials>' 
+```
+* * *
 
-## PUT /people/{oldPerson}
-Update a person name     
-Request  
-``PUT /people/DS``  
-New person name in raw body content   
-``
-{
-    "Name":"DSTeoh"
-}
-``
-~~~
-HTTP/1.1 200 OK
-Server: Microsoft-NetCore/2.0
-Date: Tue, 06 Apr 2021 00:20:19 GMT
-Content-Length: 22
-Connection: close
+# Docs
 
-{
-  "Name": "DSTeoh"
-}
-~~~
+## Development & Test
 
-## DELETE /people/{person}
-Delete a person    
-Request    
-``DELETE /people/Mattias``   
-Respond   
-~~~
-HTTP/1.1 200 OK
-Server: Microsoft-NetCore/2.0
-Date: Tue, 06 Apr 2021 00:21:30 GMT
-Connection: close
-Transfer-Encoding: chunked
-~~~
+-   Clone the repo:     
+    `git clone git@github.com:myob-fma/tiffany-kata-frameworkless-basic-web-application-api.git`
 
-## Invalid path 
-Request  
-``GET /invalidPath``  
-Respond  
-~~~
-HTTP/1.1 404 Not Found
-Server: Microsoft-NetCore/2.0
-Date: Tue, 06 Apr 2021 00:43:42 GMT
-Connection: close
-Transfer-Encoding: chunked
-~~~  
+-   Checkout to folder:     
+    `cd tiffany-kata-frameworkless-basic-web-application-api`
 
-## Invalid Method on Root
-Request  
-``POST /``  
-Respond  
-~~~
-HTTP/1.1 405 Method Not Allowed
-Server: Microsoft-NetCore/2.0
-Date: Tue, 06 Apr 2021 00:46:18 GMT
-Connection: close
-Transfer-Encoding: chunked
-~~~  
+### Run app locally
 
-## Invalid Method on /people
-Request  
-``PATCH /people``  
-Respond  
-~~~
-HTTP/1.1 405 Method Not Allowed
-Server: Microsoft-NetCore/2.0
-Date: Tue, 06 Apr 2021 00:48:10 GMT
-Connection: close
-Transfer-Encoding: chunked
-~~~
+-   build database image with people table & default name Tiffany  
+    `docker-compose -f ./ops/docker/docker-compose-server-test.yaml build database`
+-   spin up the database  
+    `docker run --rm --name postgres-db -e POSTGRES_DB=postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres-db`
+-   run app  
+    `SECRET=secret DB_HOST=localhost DB_PORT=5432 DB_NAME=postgres DB_USER=postgres DB_PASSWORD=docker dotnet run --project WebApplication`
 
+### View database locally
+
+  `pgweb`
+
+### Clean up database locally
+
+  `docker stop postgres-db`
+
+### Test
+
+-   Unit tests  
+    `./ops/bin/unit-tests.sh`
+
+-   Server test is testing the application container connects with database container and functions correctly:
+    -   build app image    
+        `docker build -f ./ops/docker/Dockerfile -t app .` 
+    -   run server test     
+        `appImage=app docker-compose -f ./ops/docker/docker-compose-server-test.yaml up --abort-on-container-exit`
+    -   remove all containers after testing     
+        `appImage=app docker-compose -f ./ops/docker/docker-compose-server-test.yaml down`
+
+## API Design
+
+<img src="./docs/api-design.png">
+
+## Pipeline diagram
+
+<img src="./docs/jupiter-pipeline.png">
+
+* * *
+
+#### *AWS*
+*[aws-deployment](https://github.com/myob-fma/tiffany-kata-frameworkless-basic-web-application-api/tree/aws-deployment) branch*
+
+-   *AWS infrastructure with cloudformation*
+-   *contains the very first version api design with in memory data*
+-   *the pipeline is not up to date*
