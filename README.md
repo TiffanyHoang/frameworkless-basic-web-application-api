@@ -96,11 +96,11 @@ curl --request DELETE \
 
 ### Run app locally
 
--   build database image with people table & default name Tiffany  
+-   Build database image with people table & default name Tiffany  
     `docker-compose -f ./ops/docker/docker-compose-server-test.yaml build database`
--   spin up the database  
+-   Spin up the database  
     `docker run --rm --name postgres-db -e POSTGRES_DB=postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres-db`
--   run app  
+-   Run app  
     `SECRET=secret DB_HOST=localhost DB_PORT=5432 DB_NAME=postgres DB_USER=postgres DB_PASSWORD=docker dotnet run --project WebApplication`
 
 ### View database locally
