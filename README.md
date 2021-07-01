@@ -19,10 +19,10 @@ A .NET Core solution to [the Frameworkless Basic Web Application kata](https://g
     -   please contact tiffany.hoang@myob.com to get the `<credentials>`
 
 ## APIs
-
+Endpoint: `https://tiffany-app.svc.platform.myobdev.com`
 1.  `GET /` - greeting with all names & the current date/time of the server. [Example](#get-)
 2.  `GET /people` - gets all names in Json format. [Example](#get-people)
-3.  `POST /people` - add new name.[Example](#post-people)
+3.  `POST /people` - add new name. [Example](#post-people)
 4.  `PUT /people/{existing-name}` - update existing name. [Example](#put-peopleexisting-name)
 5.  `DELETE /people/{existing-name}` - delete existing name. [Example](#delete-peopleexisting-name)
 
@@ -105,7 +105,7 @@ curl --request DELETE \
 
 ### View database locally
 
-  `pgweb`
+  `pgweb --host localhost --user postgres --db postgres --pass docker`
 
 ### Clean up database locally
 
@@ -122,7 +122,7 @@ curl --request DELETE \
     -   run server test     
         `appImage=app docker-compose -f ./ops/docker/docker-compose-server-test.yaml up --abort-on-container-exit`
     -   remove all containers after testing     
-        `appImage=app docker-compose -f ./ops/docker/docker-compose-server-test.yaml down`
+        `docker-compose -f ./ops/docker/docker-compose-server-test.yaml down`
 
 ## API Design
 
