@@ -10,7 +10,7 @@ A .NET Core solution to [the Frameworkless Basic Web Application kata](https://g
 
 ## Access
 
--   The aplication is accessible under MYOB VPN. 
+-   The application is accessible under MYOB VPN. 
 -   Please make sure request with Authorization header:  
     `Authorization: Basic <credentials>`  
 -   In order to get the `<credentials>`, you have to have permission to log in to either: 
