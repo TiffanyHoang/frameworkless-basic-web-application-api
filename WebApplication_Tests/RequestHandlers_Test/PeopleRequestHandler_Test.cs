@@ -141,7 +141,7 @@ namespace WebApplication_Tests
         }
 
         [Fact]
-        public void HandleUpdatePerson_UpdatedNameSameAsDefaultPersonName_RespondForbiddenStatus()
+        public void HandleUpdatePerson_UpdatedNameSameAsDefaultPersonName_Or_UpdatedNameSameAsExistingName_RespondForbiddenStatus()
         {
             var request = Mock.Of<IRequest>(r =>
                 r.HttpMethod == "PUT" &&

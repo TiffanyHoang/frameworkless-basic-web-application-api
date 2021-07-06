@@ -63,6 +63,11 @@ namespace WebApplication.Services
                     return ((int)HttpStatusCode.NotFound, null);
                 }
 
+                if (_repository.GetPeopleList().Contains(person))
+                {
+                    return ((int)HttpStatusCode.Forbidden, null);
+                }
+
                 _repository.UpdatePerson(oldPerson, new Person(person.Name));
 
                 return ((int)HttpStatusCode.OK, new Person(person.Name));

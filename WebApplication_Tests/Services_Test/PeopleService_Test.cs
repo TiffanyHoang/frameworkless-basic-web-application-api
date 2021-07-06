@@ -99,6 +99,24 @@ namespace WebApplication_Tests
         }
 
         [Fact]
+        public void UpdatePerson_NewNameIsExisted_ReturnForbidden()
+        {
+            DataRow dataRow1 = _dataTable.NewRow();
+            DataRow dataRow2 = _dataTable.NewRow();
+            dataRow1["name"] = "DS";
+            dataRow2["name"] = "DSTeoh";
+            _dataTable.Rows.Add(dataRow1);
+            _dataTable.Rows.Add(dataRow2);
+
+            Person updatePerson = new Person("DSTeoh");
+            var actualReturnResult = _peopleService.UpdatePerson(updatePerson, new Person("DS"));
+
+            var expectedReturnResult = ((int)HttpStatusCode.Forbidden, Null: (Person)null);
+
+            Assert.Equal(expectedReturnResult, actualReturnResult);
+        }
+
+        [Fact]
         public void DeletePerson_ReturnOKStatus()
         {
             DataRow dataRow = _dataTable.NewRow();
